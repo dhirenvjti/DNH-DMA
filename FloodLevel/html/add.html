@@ -22,7 +22,7 @@
 
 </style>
 	<head>
-        <title>Data Entry - Rainfall</title>
+        <title>Data Entry - Flood Level</title>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
      	<meta charset="utf-8">
@@ -68,28 +68,37 @@
         function add_directdeal(){
             $("#processing-modal").modal("show");
 
-            var rainfall_date = $('#rainfall_date').val();
-            var rainfall_location = $("#rainfall_location option:selected").html();
-            var rainfall_till_prev_date = $('#rainfall_till_prev_date').val();
-            var rainfall_last_day = $('#rainfall_last_day').val();
+            var flood_level_date = $("#flood_level_date").val();
+            var flood_level = $('#flood_level').val();
+            var discharge = $('#discharge').val();
+            var inflow = $('#inflow').val();
+            var location = $('#location option:selected').val();
+            var reading_key_station = $('#reading_key_station').val();
+            var high_tide_from = $('#high_tide_from').val();
+            var high_tide_to = $('#high_tide_to').val();
+            var low_tide_from = $('#low_tide_from').val();
+            var low_tide_to = $('#low_tide_to').val();
             var user_name = $('#user_name').val();
-            var user_designation = $('#user_designation option:selected').val();
-            var user_contact = $('#user_contact').val();
-            var remarks = $('#remarks').val();
+            var user_designation = $('#user_designation').val();
 
             var args = {
-                "rainfall_date": rainfall_date,
-                "rainfall_till_prev_date": rainfall_till_prev_date,
-                "rainfall_last_day": rainfall_last_day,
-                "rainfall_location": rainfall_location,
+                "flood_level_date": flood_level_date,
+                "flood_level": flood_level,
+                "discharge": discharge,
+                "inflow": inflow,
+                "location": location,
+                "reading_key_station": reading_key_station,
+                "high_tide_from": high_tide_from,
+                "high_tide_to": high_tide_to,
+                "low_tide_from": low_tide_from,
+                "low_tide_to": low_tide_to,
                 "user_name": user_name,
-                "user_designation": user_designation,
-                "user_contact": user_contact,
-                "remarks": remarks
+                "user_designation": user_designation
+
             };
 
             $.ajax({
-                url: '/rainfall/add',
+                url: '/flood_level/add',
                 data: args,
                 type: 'POST',
                 error: function(data) {
@@ -139,10 +148,13 @@
         </div>
 			<div class="container">
 				<div class="jumbotron">
-                    <h2 style='display:inline;'>Data Entry - Rainfall</h2><br><br>
+                    <h2 style='display:inline;'>Data Entry - Flood Level</h2><br><br>
 
-                    <label for="rainfall_location">Location:</label><br>
-					<select class="selectpicker" id="rainfall_location" name="rainfall_location">
+                    <label for="flood_level_date">Flood Level Date and Time:</label><br>
+                    <input type="datetime-local" id="flood_level_date" name="flood_level_date" style="width:200px;word-wrap: break-word;" value="{{ default_flood_level_date }}"><br><br>
+
+                    <label for="location">Location:</label><br>
+					<select class="selectpicker" id="location" name="location">
 					<script type="text/javascript">
                         var location_list = ['Madhuban Dam', 'Central Water Commission', 'Farmers Training Center'];
                         for(var i = 0; i<location_list.length; i++){
@@ -153,39 +165,37 @@
 					</script>
 					</select><br><br>
 
-                    <label for="rainfall_date">Rainfall Date:</label><br>
-                    <input type="date" id="rainfall_date" name="rainfall_date" style="width:140px;word-wrap: break-word;" value="{{ default_rainfall_date }}"><br><br>
+					<label for="flood_level">Level: </label><br>
+					<input placeholder="in meters" type="number" id="flood_level" name="flood_level"><br><br>
 
-					<label for="rainfall_till_prev_date">Rainfall upto previous day:</label><br>
-					<input placeholder="in m.m." type="number" id="rainfall_till_prev_date" name="rainfall_till_prev_date"><br><br>
+                    <label for="discharge">Discharge:</label><br>
+					<input placeholder="in cusec" type="number" id="discharge" name="discharge"><br><br>
 
-                    <label for="rainfall_last_day">Rainfall during last 24 hrs:</label><br>
-					<input placeholder="in m.m." type="number" id="rainfall_last_day" name="rainfall_last_day"><br><br>
+                    <label for="inflow">Inflow:</label><br>
+					<input placeholder="in cusec" type="number" id="inflow" name="inflow"><br><br>
 
-                    <label for="remarks">Remarks:</label><br>
-                    <textarea placeholder="remarks" id="remarks" name="remarks"></textarea><br><br>
+                    <label for="reading_key_station">Reading at key station:</label><br>
+					<input placeholder="e.g. Athal Bridge reading" type="number" id="reading_key_station" name="reading_key_station"><br><br>
+
+                    <label for="high_tide_from">High Tide From:</label><br>
+                    <input type="datetime-local" id="high_tide_from" name="high_tide_from" style="width:200px;word-wrap: break-word;"><br><br>
+
+                    <label for="high_tide_to">High Tide To:</label><br>
+                    <input type="datetime-local" id="high_tide_to" name="high_tide_to" style="width:200px;word-wrap: break-word;"><br><br>
+
+                    <label for="low_tide_from">Low Tide From:</label><br>
+                    <input type="datetime-local" id="low_tide_from" name="low_tide_from" style="width:200px;word-wrap: break-word;"><br><br>
+
+                    <label for="low_tide_to">Low Tide To:</label><br>
+                    <input type="datetime-local" id="low_tide_to" name="low_tide_to" style="width:200px;word-wrap: break-word;"><br><br>
+
 
 					<label for="user_name">Name of person filling this form:</label><br>
 					<input placeholder="name" type="text" id="user_name" name="user_name"><br><br>
 
-                    <label for="user_designation">Designation of person filling this form:</label><br>
-					<select class="selectpicker" id="user_designation" name="user_designation">
-					<script type="text/javascript">
-                        var designation_list = ['Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)', 'Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
-                        for(var i = 0; i<designation_list.length; i++){
-									str1 = "<option>%s</option>";
-									str = str1.replace('%s', designation_list[i]);
-									document.write(str);
-						}
-					</script>
-					</select><br><br>
+                    <label for="user_designation">Designtion of person filling this form:</label><br>
+					<input placeholder="designation" type="text" id="user_designation" name="user_designation"><br><br>
 
-
-                    <label for="user_contact">Contact No.:</label><br>
-					<input placeholder="contact number" type="text" id="user_contact" name="user_contact"><br><br>
-
-                    <label for="user_fax">Fax No.:</label><br>
-					<input placeholder="contact number" type="text" id="user_fax" name="user_fax" value="0260-2641113" disabled><br><br>
 
 					<input class="btn-primary" type="submit" value="Add" onclick="add_directdeal()"><br><br><br>
 

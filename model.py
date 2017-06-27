@@ -18,3 +18,22 @@ class Rainfall(db.Model):
 
     created_at = db.DateTimeProperty(auto_now_add=True)
     modified_at = db.DateTimeProperty(auto_now=True)
+
+class FloodLevel(db.Model):
+    flood_level_date = db.DateTimeProperty()
+    flood_level = db.FloatProperty(default=0.0)
+    discharge = db.FloatProperty(default=0.0)
+    inflow = db.FloatProperty(default=0.0)
+    location = db.StringProperty()
+    reading_key_station = db.FloatProperty(default=0.0)
+    high_tide_from = db.DateTimeProperty()
+    high_tide_to = db.DateTimeProperty()
+    low_tide_from = db.DateTimeProperty()
+    low_tide_to = db.DateTimeProperty()
+
+    user_name = db.StringProperty()
+    user_email = db.StringProperty()
+    user_designation = db.StringProperty()
+
+    created_at = db.DateTimeProperty(auto_now_add=True)
+    modified_at = db.DateTimeProperty(auto_now=True)
