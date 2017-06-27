@@ -1,6 +1,9 @@
 import datetime
 
+import logging
+
 import model
+import utils
 
 
 class Rainfall(object):
@@ -15,8 +18,36 @@ class Rainfall(object):
         rainfall_entry.put()
         return self.get_json_object(rainfall_entry)
 
+    def get(self, debug=False, **filters):
+        query_string = "select * from Rainfall"
+
+        filters = {key: val for key, val in filters.iteritems() if val != None}
+
+        i = 0
+        for field in filters:
+            if i == 0:
+                query_string += " where "
+
+            if i < len(filters) - 1:
+                query_string += "%s='%s' and " % (field, filters[field])
+            else:
+                query_string += "%s='%s'" % (field, filters[field])
+            i += 1
+
+        response = utils.fetch_gql(query_string)
+        if debug:
+            logging.error("Query String: %s\n\n Response Length: %s" % (query_string, len(response)))
+
+        return response
+
     def fetch_all(self):
-        pass
+        all_entries = self.get()
+
+        response = []
+        for rainfall_entry in all_entries:
+            response.append(self.get_json_object(rainfall_entry))
+
+        return response
 
     @staticmethod
     def get_json_object(datastore_entity):
@@ -30,6 +61,7 @@ class Rainfall(object):
             "user_designation": datastore_entity.user_designation,
             "user_contact": datastore_entity.user_contact,
             "user_fax": datastore_entity.user_fax,
+            "user_email": datastore_entity.user_email,
             "remarks": datastore_entity.remarks,
         }
 
@@ -54,6 +86,7 @@ class Rainfall(object):
         rainfall_entry.user_designation = json_object["user_designation"]
         rainfall_entry.user_contact = json_object["user_contact"]
         rainfall_entry.user_fax = json_object["user_fax"]
+        rainfall_entry.user_email = json_object["user_email"]
 
         rainfall_entry.remarks = json_object["remarks"]
 

@@ -6,8 +6,8 @@ app = webapp2.WSGIApplication([
                   handler_method='add',
                   methods=['GET', 'POST']),
 
-    webapp2.Route(template='/rainfall/fetch',
+    webapp2.Route(template='/rainfall/fetch_all',
                   handler=RainfallHandler,
-                  handler_method='fetch',
+                  handler_method='fetch_all',
                   methods=['GET', 'POST']),
 ])

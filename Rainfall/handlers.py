@@ -6,9 +6,13 @@ import traceback
 import webapp2
 from google.appengine.ext.webapp import template
 from .models import *
+import utils
 
 class RainfallHandler(webapp2.RequestHandler):
     def add(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
 
         self.response.headers['Content-Type'] = "application/json"
         self.response.headers['Access-Control-Allow-Origin'] = '*'
@@ -31,6 +35,7 @@ class RainfallHandler(webapp2.RequestHandler):
                 rainfall_cumulative=rainfall_cumulative,
                 rainfall_location=rainfall_location,
                 user_name=user_name,
+                user_email=user_email,
                 user_designation=user_designation,
                 user_contact=user_contact,
                 user_fax=user_fax,
@@ -42,5 +47,18 @@ class RainfallHandler(webapp2.RequestHandler):
             self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
             logging.error(traceback.format_exc())
 
-    def fetch(self):
-        pass
+    def fetch_all(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        self.response.headers['Content-Type'] = "application/json"
+        self.response.headers['Access-Control-Allow-Origin'] = '*'
+        try:
+
+            response = Rainfall().fetch_all()
+
+            self.response.out.write(json.dumps({'success': True, 'error': [], 'response': response}))
+        except Exception as e:
+            self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
+            logging.error(traceback.format_exc())
