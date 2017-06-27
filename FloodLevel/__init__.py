@@ -10,4 +10,9 @@ app = webapp2.WSGIApplication([
                   handler=FloodLevelHandler,
                   handler_method='fetch_all',
                   methods=['GET', 'POST']),
+
+    webapp2.Route(template='/flood_level/sms_notification/daily',
+                  handler=SMSNotificationHandler,
+                  handler_method='daily',
+                  methods=['GET', 'POST']),
 ])

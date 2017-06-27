@@ -1,6 +1,9 @@
 import datetime
 
 import logging
+import urllib
+
+from google.appengine.api import urlfetch
 
 import model
 import utils
@@ -113,3 +116,15 @@ class TimeZone(datetime.tzinfo):
 
     def tzname(self,dt):
          return self.name
+
+class SMSNotification(object):
+    def __init__(self):
+        self.base_url = "http://dnd.saakshisoftware.com/api/mt/SendSMS?"
+
+    def send_group_sms(self, **payload):
+        logging.info(payload)
+        result = urlfetch.fetch(
+            url=self.base_url + urllib.urlencode(payload),
+            method=urlfetch.GET,
+            deadline=50
+        )

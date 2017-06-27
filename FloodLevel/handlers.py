@@ -83,3 +83,35 @@ class FloodLevelHandler(webapp2.RequestHandler):
         except Exception as e:
             self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
             logging.error(traceback.format_exc())
+
+class SMSNotificationHandler(webapp2.RequestHandler):
+    def alert(self):
+        pass
+
+    def daily(self):
+        debug = self.request.get("debug", "0")
+        group_id = 12124 if debug=="1" else 12124 # 12339 for production
+        floodlevel_latest_entry = FloodLevel.get_latest_entry()
+
+        message = "UPDATE: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
+                  "{inflow} cusec, Outflow {outflow} cusec (Evacuation at 300000) {time} {date} -DNHDMA".format(
+            athallevel=floodlevel_latest_entry.reading_key_station,
+            madhubandam=floodlevel_latest_entry.flood_level,
+            inflow=int(floodlevel_latest_entry.inflow),
+            outflow=int(floodlevel_latest_entry.discharge),
+            time="06:30PM",
+            date=datetime.datetime.today().strftime("%d/%m/%y")
+        )
+        sms_notification = SMSNotification()
+        sms_notification.send_group_sms(
+            user="dnhdm2017",
+            password="123456",
+            senderid="DNHDMC",
+            channel="Trans",
+            DCS=0,
+            flashsms=0,
+            number=917874148005,
+            text=message,
+            groupid=group_id,
+            route=15
+        )
