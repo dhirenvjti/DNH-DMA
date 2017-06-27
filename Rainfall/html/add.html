@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+	input{
+		position: 100px;
+		width:200px;
+	}
+	body{
+		font-size: 100px;
+		font-family: monaco, monospace;
+		padding: 50px;
+	}
+	td{
+		border: 2px solid black;
+	}
+	table, th, td{
+	    border: 2px solid black;
+	}
+	label{
+		font-size:17px;
+	}
+
+</style>
+	<head>
+        <title>Add Rainfall Data</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+     	<meta charset="utf-8">
+	    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!--<script src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
+   </head>
+    <script>
+        function getUrlVars()
+        {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker({
+                actionsBox: true,
+                liveSearch: true
+            });
+        });
+
+        function add_directdeal(){
+            $("#processing-modal").modal("show");
+
+            var rainfall_date = $('#rainfall_date').val();
+            var rainfall_location = $("#rainfall_location option:selected").html();
+            var rainfall_till_prev_date = $('#rainfall_till_prev_date').val();
+            var rainfall_last_day = $('#rainfall_last_day').val();
+            var user_name = $('#user_name').val();
+            var user_designation = $('#user_designation option:selected').val();
+            var user_contact = $('#user_contact').val();
+            var remarks = $('#remarks').val();
+
+            var args = {
+                "rainfall_date": rainfall_date,
+                "rainfall_till_prev_date": rainfall_till_prev_date,
+                "rainfall_last_day": rainfall_last_day,
+                "rainfall_location": rainfall_location,
+                "user_name": user_name,
+                "user_designation": user_designation,
+                "user_contact": user_contact,
+                "remarks": remarks
+            };
+
+            $.ajax({
+                url: '/rainfall/add',
+                data: args,
+                type: 'POST',
+                error: function(data) {
+                    $("#processing-modal").modal("hide");
+                    $('#output_text_id').val('Internal Error:'+data);
+                },
+                success: function(data) {
+                    $("#processing-modal").modal("hide");
+                    if (data['success'] == false){
+
+                        $('#output_text_id').empty();
+                        if (typeof data['error']  === 'object'){
+                            for(i = 0 ; i < data['error'].length ; i++){
+                                    var str1 = '<ul><li>%s</li></ul>';
+
+                                    var str = str1.replace('%s', data['error'][i]["err_msg"]);
+                                    $('#output_text_id').addClass('alert alert-danger').append(str);
+                            }
+                        }
+                        else if (typeof data['error']  === 'string'){
+                            $('#output_text_id').empty();
+                            $('#output_text_id').addClass('alert alert-danger').append( data['error']);
+                        }
+                    }
+                    else{
+
+                        $('#output_text_id').empty().removeClass('alert alert-danger').addClass('alert alert-success');
+                        $('#output_text_id').append('Success');
+                    }
+                }
+            });
+        }
+
+    </script>
+	<body>
+        <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="/static/pie.gif" class="icon"/>
+                            <h4>Processing...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+			<div class="container">
+				<div class="jumbotron">
+                    <h2 style='display:inline;'>Rainfall Data Entry</h2><br><br>
+
+                    <label for="rainfall_location">Location:</label><br>
+					<select class="selectpicker" id="rainfall_location" name="rainfall_location">
+					<script type="text/javascript">
+                        var location_list = ['Madhuban Dam', 'Central Water Commission', 'Farmers Training Center'];
+                        for(var i = 0; i<location_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', location_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+                    <label for="rainfall_date">Rainfall Date:</label><br>
+                    <input type="date" id="rainfall_date" name="rainfall_date" style="width:140px;word-wrap: break-word;" value="{{ default_rainfall_date }}"><br><br>
+
+					<label for="rainfall_till_prev_date">Rainfall upto previous day:</label><br>
+					<input placeholder="in m.m." type="text" id="rainfall_till_prev_date" name="rainfall_till_prev_date"><br><br>
+
+                    <label for="rainfall_last_day">Rainfall during last 24 hrs:</label><br>
+					<input placeholder="in m.m." type="text" id="rainfall_last_day" name="rainfall_last_day"><br><br>
+
+                    <label for="remarks">Remarks:</label><br>
+                    <textarea placeholder="remarks" id="remarks" name="remarks"></textarea><br><br>
+
+					<label for="user_name">Name of person filling this form:</label><br>
+					<input placeholder="in m.m." type="text" id="user_name" name="user_name"><br><br>
+
+                    <label for="user_designation">Designation of person filling this form:</label><br>
+					<select class="selectpicker" id="user_designation" name="user_designation">
+					<script type="text/javascript">
+                        var designation_list = ['Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)', 'Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
+                        for(var i = 0; i<designation_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', designation_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+
+                    <label for="user_contact">Contact No.:</label><br>
+					<input placeholder="contact number" type="text" id="user_contact" name="user_contact"><br><br>
+
+                    <label for="user_fax">Fax No.:</label><br>
+					<input placeholder="contact number" type="text" id="user_fax" name="user_fax" value="0260-2641113" disabled><br><br>
+
+					<input class="btn-primary" type="submit" value="Add" onclick="add_directdeal()"><br><br><br>
+
+					<div id="output_text_id"></div>
+				</div>
+            </div>
+	</body>
+</html>

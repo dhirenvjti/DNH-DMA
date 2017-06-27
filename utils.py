@@ -1,3 +1,5 @@
+import os
+
 from google.appengine.api import users
 from google.appengine.ext import db
 
@@ -37,3 +39,6 @@ def fetch_gql(query_string, fetchsize=50):
         results += intermediate_result
 
     return results
+
+def template(file_name, directory="templates"):
+  return os.path.join(os.path.dirname(__file__), directory, file_name)
