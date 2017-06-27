@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DNH-DMA</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h2 style="text-align:center;">Dadra & Nagar Haveli</h2>
+            <h3 style="text-align:center;">Silvassa</h3><br><br>
+            <h6>Rainfall last updated on: {{ rainfall_date }}</h6>
+            <h6>Water Level last updated on: {{ floodlevel_date }}</h6>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Water Level at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_last_day }} meters</td>
+                    </tr>
+                    <tr>
+                        <td>Inflow at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_inflow }} Cusec</td>
+                    </tr>
+                    <tr>
+                        <td>Outflow at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_discharge }} Cusec</td>
+                    </tr>
+                    <tr>
+                        <td>Water Level at Athal Bridge</td>
+                        <td>{{ floodlevel_key_station }} meters</td>
+                    </tr>
+                    <tr>
+                        <td>Rainfall</td>
+                        <td>{{ rainfall_last_day }} mm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

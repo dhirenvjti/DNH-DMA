@@ -40,6 +40,10 @@ class FloodLevel(object):
 
         return response
 
+    @staticmethod
+    def get_latest_entry():
+        return model.FloodLevel.all().order('-flood_level_date').get()
+
     def fetch_all(self):
         all_entries = self.get()
 

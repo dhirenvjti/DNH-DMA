@@ -9,6 +9,9 @@ automatic_scaling:
   max_idle_instances: 1
 
 handlers:
+- url: /public/.*|^/public$
+  script: Public.app
+
 - url: /flood_level/.*|^/flood_level$
   script: FloodLevel.app
 

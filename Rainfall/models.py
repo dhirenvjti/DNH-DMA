@@ -40,6 +40,10 @@ class Rainfall(object):
 
         return response
 
+    @staticmethod
+    def get_latest_entry():
+        return model.Rainfall.all().order('-rainfall_date').get()
+
     def fetch_all(self):
         all_entries = self.get()
 
