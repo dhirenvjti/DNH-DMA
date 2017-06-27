@@ -9,6 +9,9 @@ automatic_scaling:
   max_idle_instances: 1
 
 handlers:
+- url: /rainfall/.*|^/rainfall$
+  script: Rainfall.app
+
 - url: .*
   script: main.app
 
