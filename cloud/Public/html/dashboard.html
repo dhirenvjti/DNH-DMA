@@ -12,49 +12,58 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+    <script>
+        function refresh(){
+            $('.main-content').html("");
+            window.location.reload();
+        }
+    </script>
 </head>
 <body style="background-color: {{ background_color }}; color: {{ color }};">
-    <div class="container">
+    <div class="container abc">
         <h2 style="text-align:center;">Union Territory of Dadra & Nagar Haveli</h2>
         <h3 style="text-align:center;">Silvassa</h3><br>
         <h2 style="text-align: center"><b>{{ notification_type }}</b></h2>
-        <div style="width: 80%; float: left; text-align: left;">
-            <h6>Rainfall last updated on: {{ rainfall_date }}</h6>
-            <h6>Water Level last updated on: {{ floodlevel_date }}</h6>
-        </div>
 
-        <div style="width: 20%; float: right; text-align: right;">
-            <br>
-            <a href="#">
-                <span class="glyphicon glyphicon-refresh" onclick="window.location.reload();"></span>
-            </a>
-        </div>
+        <div class="main-content">
+            <div style="width: 80%; float: left; text-align: left;">
+                <h6>Rainfall last updated on: {{ rainfall_date }}</h6>
+                <h6>Water Level last updated on: {{ floodlevel_date }}</h6>
+            </div>
 
-        <table class="table" style="font-size: 120%;">
-            <tbody>
-                <tr>
-                    <td>Water Level at {{ floodlevel_location }}</td>
-                    <td>{{ floodlevel_last_day }} meters</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Inflow at {{ floodlevel_location }}</td>
-                    <td>{{ floodlevel_inflow }} Cusec</td>
-                </tr>
-                <tr>
-                    <td>Outflow at {{ floodlevel_location }}</td>
-                    <td>{{ floodlevel_discharge }} Cusec</td>
-                </tr>
-                <tr>
-                    <td>Water Level at Athal Bridge</td>
-                    <td>{{ floodlevel_key_station }} meters</td>
-                </tr>
-                <tr>
-                    <td>Rainfall</td>
-                    <td>{{ rainfall_last_day }} mm</td>
-                </tr>
-            </tbody>
-        </table>
+            <div style="width: 20%; float: right; text-align: right;">
+                <br>
+                <a href="#">
+                    <span class="glyphicon glyphicon-refresh" onclick="refresh();"></span>
+                </a>
+            </div>
+
+            <table class="table" style="font-size: 120%;">
+                <tbody>
+                    <tr>
+                        <td>Water Level at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_last_day }} meters</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Inflow at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_inflow }} Cusec</td>
+                    </tr>
+                    <tr>
+                        <td>Outflow at {{ floodlevel_location }}</td>
+                        <td>{{ floodlevel_discharge }} Cusec</td>
+                    </tr>
+                    <tr>
+                        <td>Water Level at Athal Bridge</td>
+                        <td>{{ floodlevel_key_station }} meters</td>
+                    </tr>
+                    <tr>
+                        <td>Rainfall</td>
+                        <td>{{ rainfall_last_day }} mm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
