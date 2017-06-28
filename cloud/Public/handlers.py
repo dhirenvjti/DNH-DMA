@@ -12,7 +12,7 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
 
         rainfall_latest_entry = Rainfall.get_latest_entry()
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
-        background_color = "#000000"
+        background_color = "#2d2d2d"
         color = "#ffffff"
         notification_type = ""
         if 250000 <= floodlevel_latest_entry.discharge < 300000:
