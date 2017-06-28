@@ -86,7 +86,35 @@ class FloodLevelHandler(webapp2.RequestHandler):
 
 class SMSNotificationHandler(webapp2.RequestHandler):
     def alert(self):
-        pass
+        debug = self.request.get("debug", "0")
+        floodlevel_latest_entry = FloodLevel.get_latest_entry()
+        if floodlevel_latest_entry.flood_level > 79.86 or floodlevel_latest_entry.reading_key_station > 29 or floodlevel_latest_entry.discharge > 250000:
+            group_ids = [12124] if debug == "1" else [12124]  # [12337, 12338] for production
+            floodlevel_latest_entry = FloodLevel.get_latest_entry()
+
+            message = "ALERT: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
+                      "{inflow} cusec, Outflow {outflow} cusec (Evacuation at 300000) {time} {date} -DNHDMA".format(
+                athallevel=floodlevel_latest_entry.reading_key_station,
+                madhubandam=floodlevel_latest_entry.flood_level,
+                inflow=int(floodlevel_latest_entry.inflow),
+                outflow=int(floodlevel_latest_entry.discharge),
+                time=utils.get_formated_am_pm_time(datetime.datetime.now(TimeZone(+5.5, False, 'IST'))),
+                date=datetime.datetime.today().strftime("%d/%m/%y")
+            )
+            sms_notification = SMSNotification()
+            for group_id in group_ids:
+                sms_notification.send_group_sms(
+                    user="dnhdm2017",
+                    password="123456",
+                    senderid="DNHDMC",
+                    channel="Trans",
+                    DCS=0,
+                    flashsms=0,
+                    number=917874148005,
+                    text=message,
+                    groupid=group_id,
+                    route=15
+                )
 
     def daily(self):
         debug = self.request.get("debug", "0")

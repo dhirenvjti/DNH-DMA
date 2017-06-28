@@ -42,3 +42,17 @@ def fetch_gql(query_string, fetchsize=50):
 
 def template(file_name, directory="templates"):
   return os.path.join(os.path.dirname(__file__), directory, file_name)
+
+def get_formated_am_pm_time(datetime_object):
+    am_pm = "AM"
+    hour = datetime_object.hour
+    min = datetime_object.minute
+    if datetime_object.hour == 12:
+        am_pm = "PM"
+    elif datetime_object.hour > 12:
+        am_pm = "PM"
+        hour = datetime_object.hour - 12
+    elif datetime_object.hour == 0:
+        hour = 12
+
+    return '{}:{}{}'.format(hour, min, am_pm)
