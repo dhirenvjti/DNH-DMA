@@ -102,21 +102,6 @@ class FloodLevel(object):
 
         return flood_level_entry, entry_exists
 
-class TimeZone(datetime.tzinfo):
-    def __init__(self,offset, isdst, name):
-        self.offset = offset
-        self.isdst = isdst
-        self.name = name
-
-    def utcoffset(self, dt):
-        return datetime.timedelta(hours=self.offset) + self.dst(dt)
-
-    def dst(self, dt):
-            return datetime.timedelta(hours=1) if self.isdst else datetime.timedelta(0)
-
-    def tzname(self,dt):
-         return self.name
-
 class SMSNotification(object):
     def __init__(self):
         self.base_url = "http://dnd.saakshisoftware.com/api/mt/SendSMS?"

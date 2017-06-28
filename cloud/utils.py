@@ -1,5 +1,6 @@
 import os
 
+import datetime
 from google.appengine.api import users
 from google.appengine.ext import db
 
@@ -56,3 +57,33 @@ def get_formated_am_pm_time(datetime_object):
         hour = 12
 
     return '{}:{}{}'.format(hour, min, am_pm)
+
+class TimeZone(datetime.tzinfo):
+    def __init__(self,offset, isdst, name):
+        self.offset = offset
+        self.isdst = isdst
+        self.name = name
+
+    def utcoffset(self, dt):
+        return datetime.timedelta(hours=self.offset) + self.dst(dt)
+
+    def dst(self, dt):
+            return datetime.timedelta(hours=1) if self.isdst else datetime.timedelta(0)
+
+    def tzname(self,dt):
+         return self.name
+
+def docx_replace_regex(doc_obj, regex , replace):
+    for p in doc_obj.paragraphs:
+        if regex.search(p.text):
+            inline = p.runs
+            # Loop added to work with runs (strings with same style)
+            for i in range(len(inline)):
+                if regex.search(inline[i].text):
+                    text = regex.sub(replace, inline[i].text)
+                    inline[i].text = text
+
+    for table in doc_obj.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                docx_replace_regex(cell, regex , replace)

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+	input{
+		position: 100px;
+		width:200px;
+	}
+	body{
+		font-size: 100px;
+		font-family: monaco, monospace;
+		padding: 50px;
+	}
+	td{
+		border: 2px solid black;
+	}
+	table, th, td{
+	    border: 2px solid black;
+	}
+	label{
+		font-size:17px;
+	}
+
+</style>
+	<head>
+        <title>Report - Information related to Flood and Flood-Damage</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+     	<meta charset="utf-8">
+	    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!--<script src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
+   </head>
+    <script>
+        function getUrlVars()
+        {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker({
+                actionsBox: true,
+                liveSearch: true
+            });
+        });
+
+        function add_directdeal(){
+            $("#processing-modal").modal("show");
+            var date_of_sending = $('#date_of_sending').val();
+            var date_of_reporting = $('#date_of_reporting').val();
+            var general_trend_of_rainfall_last_24 = $('#general_trend_of_rainfall_last_24').val();
+            var cumulative_total_rainfall = $('#cumulative_total_rainfall').val();
+            var river_name_levels_observed = $('#river_name_levels_observed').val();
+            var name_engineering_works = $('#name_engineering_works').val();
+            var communication_disruption_details = $('#communication_disruption_details').val();
+            var relief_measures_taken = $('#relief_measures_taken').val();
+            var comments_press_news = $('#comments_press_news').val();
+            var enclosed_map = $('#enclosed_map').val();
+            var flood_damaged_stats_attached = $('#flood_damaged_stats_attached').val();
+            var sr_no = $('#sr_no').val();
+            var state = $('#state').val();
+            var area_affected = $('#area_affected').val();
+            var population_affected = $('#population_affected').val();
+            var damage_to_crops = $('#damage_to_crops').val();
+            var damage_to_houses = $('#damage_to_houses').val();
+            var cattles_lost = $('#cattles_lost').val();
+            var human_lives_lost = $('#human_lives_lost').val();
+            var damage_to_public_utilities = $('#damage_to_public_utilities').val();
+            var total_damage = $('#total_damage').val();
+            var user_name = $('#user_name').val();
+            var user_designation = $('#user_designation').val();
+            var user_contact = $('#user_contact').val();
+            var user_fax = $('#user_fax').val();
+
+            var args = {
+                "date_of_sending": date_of_sending,
+                "date_of_reporting": date_of_reporting,
+                "general_trend_of_rainfall_last_24": general_trend_of_rainfall_last_24,
+                "cumulative_total_rainfall": cumulative_total_rainfall,
+                "river_name_levels_observed": river_name_levels_observed,
+                "name_engineering_works": name_engineering_works,
+                "communication_disruption_details": communication_disruption_details,
+                "relief_measures_taken": relief_measures_taken,
+                "comments_press_news": comments_press_news,
+                "enclosed_map": enclosed_map,
+                "flood_damaged_stats_attached": flood_damaged_stats_attached,
+                "sr_no": sr_no,
+                "state": state,
+                "area_affected": area_affected,
+                "population_affected": population_affected,
+                "damage_to_crops": damage_to_crops,
+                "damage_to_houses": damage_to_houses,
+                "cattles_lost": cattles_lost,
+                "human_lives_lost": human_lives_lost,
+                "damage_to_public_utilities": damage_to_public_utilities,
+                "total_damage": total_damage,
+                "user_name": user_name,
+                "user_designation": user_designation,
+                "user_contact": user_contact,
+                "user_fax": user_fax,
+            };
+
+            $.ajax({
+                url: '/report/flood_damage',
+                data: args,
+                type: 'POST',
+                error: function(data) {
+                    $("#processing-modal").modal("hide");
+                    $('#output_text_id').val('Internal Error:'+data);
+                },
+                success: function(data) {
+                    $("#processing-modal").modal("hide");
+                    if (data['success'] == false){
+
+                        $('#output_text_id').empty();
+                        if (typeof data['error']  === 'object'){
+                            for(i = 0 ; i < data['error'].length ; i++){
+                                    var str1 = '<ul><li>%s</li></ul>';
+
+                                    var str = str1.replace('%s', data['error'][i]["err_msg"]);
+                                    $('#output_text_id').addClass('alert alert-danger').append(str);
+                            }
+                        }
+                        else if (typeof data['error']  === 'string'){
+                            $('#output_text_id').empty();
+                            $('#output_text_id').addClass('alert alert-danger').append( data['error']);
+                        }
+                    }
+                    else{
+
+                        $('#output_text_id').empty().removeClass('alert alert-danger').addClass('alert alert-success');
+                        $('#output_text_id').append("Success. Please <a href='"+ data['response'] +"'>download</a> report.");
+                    }
+                }
+            });
+        }
+
+    </script>
+	<body>
+        <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="/static/images/pie.gif" class="icon"/>
+                            <h4>Processing...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+			<div class="container">
+				<div class="jumbotron">
+                    <h2 style='display:inline;'>Report - Information related to Flood and Flood-Damage</h2><br><br>
+
+                    <label for="date_of_sending">Date (Date of Sending):</label><br>
+                    <input type="date" id="date_of_sending" name="date_of_sending" style="width:140px;word-wrap: break-word;"><br><br>
+
+                    <label for="date_of_reporting">Date (Date of Reporting):</label><br>
+                    <input type="date" id="date_of_reporting" name="date_of_reporting" style="width:140px;word-wrap: break-word;"><br><br>
+
+                    <label for="general_trend_of_rainfall_last_24">Indicate the general trend of rainfall in the last 24 hours</label><br>
+					<input placeholder="in m.m." type="number" id="general_trend_of_rainfall_last_24" name="general_trend_of_rainfall_last_24"><br><br>
+
+                    <label for="cumulative_total_rainfall">Cumulative Total Rainfall since 1st June, 2017</label><br>
+					<input placeholder="in m.m." type="number" id="cumulative_total_rainfall" name="cumulative_total_rainfall"><br><br>
+
+                    <label for="river_name_levels_observed">Name of river and levels observed at key stations where the water level crosses the warning level normally 1.00 meter below danger level (Indicate Rising/Falling). The danger level & the maximum level ever reached(with date) at the stations under report may also be indicated in the first report. (meter)</label><br>
+                    <textarea placeholder="" id="river_name_levels_observed" name="river_name_levels_observed"></textarea><br><br>
+
+                    <label for="name_engineering_works">Names of Engineering works (Flood embankments, bank protection works, spurs, roads, canals, railway and other public utilities etc. damaged and approximate value of damage, if possible.)</label><br>
+                    <textarea placeholder="" id="name_engineering_works" name="name_engineering_works"></textarea><br><br>
+
+                    <label for="communication_disruption_details">Details of disruption to communications like highways, railways and telegraphs lines etc.</label><br>
+                    <textarea placeholder="" id="communication_disruption_details" name="communication_disruption_details"></textarea><br><br>
+
+                    <label for="relief_measures_taken">Described measures taken to give relief to the affected persons and repair of the damage.</label><br>
+                        <textarea placeholder="" id="relief_measures_taken" name="relief_measures_taken"></textarea><br><br>
+
+                    <label for="comments_press_news">Comments on relevant press news.</label><br>
+                        <textarea placeholder="" id="comments_press_news" name="comments_press_news"></textarea><br><br>
+
+                    <label for="enclosed_map">Enclose map showing area flooded.</label><br>
+					<select class="selectpicker" id="enclosed_map" name="enclosed_map">
+					<script type="text/javascript">
+                        var location_list = ['No','Yes'];
+                        for(var i = 0; i<location_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', location_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+                    <label for="flood_damaged_stats_attached">Flood damage statistics in the format attached as Annex - II</label><br>
+					<select class="selectpicker" id="flood_damaged_stats_attached" name="flood_damaged_stats_attached">
+					<script type="text/javascript">
+                        var location_list = ['No','Yes'];
+                        for(var i = 0; i<location_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', location_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+                    <label for="sr_no">Sr. No.</label><br>
+					<input value="1" type="number" id="sr_no" name="sr_no" disabled><br><br>
+
+                    <label for="state">State/District</label><br>
+					<input value="Dadra Nagar Haveli" type="text" id="state" name="state" disabled><br><br>
+
+                    <label for="area_affected">Area affected</label><br>
+					<input placeholder="in M.hac." type="text" id="area_affected" name="area_affected"><br><br>
+
+                    <label for="population_affected">Population affected</label><br>
+					<input placeholder="in Million" type="text" id="population_affected" name="population_affected"><br><br>
+
+                    <label for="damage_to_crops">Damage to crops</label><br>
+					<input placeholder="in M.hac." type="text" id="damage_to_crops" name="damage_to_crops"><br><br>
+
+                    <label for="damage_to_houses">Damage to houses</label><br>
+					<input placeholder="in Nos" type="text" id="damage_to_houses" name="damage_to_houses"><br><br>
+
+                    <label for="cattles_lost">Cattles lost</label><br>
+					<input placeholder="in Nos" type="text" id="cattles_lost" name="cattles_lost"><br><br>
+
+                    <label for="human_lives_lost">Human Lives lost</label><br>
+					<input placeholder="in Nos" type="text" id="human_lives_lost" name="human_lives_lost"><br><br>
+
+                    <label for="damage_to_public_utilities">Damage to Public Utilities</label><br>
+					<input placeholder="in Crore Rs." type="text" id="damage_to_public_utilities" name="damage_to_public_utilities"><br><br>
+
+                    <label for="total_damage">Total Damage to crops houses, public Utilities etc. </label><br>
+					<input placeholder="in Crore Rs." type="text" id="total_damage" name="total_damage"><br><br>
+
+                    <label for="user_name">Name of person filling this form:</label><br>
+					<input placeholder="name" type="text" id="user_name" name="user_name"><br><br>
+
+                    <label for="user_designation">Designation of person filling this form:</label><br>
+					<select class="selectpicker" id="user_designation" name="user_designation">
+					<script type="text/javascript">
+                        var designation_list = ['Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)', 'Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
+                        for(var i = 0; i<designation_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', designation_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+                    <label for="user_contact">Contact No.:</label><br>
+					<input placeholder="contact number" type="text" id="user_contact" name="user_contact"><br><br>
+
+                    <label for="user_fax">Fax No.:</label><br>
+					<input placeholder="fax number" type="text" id="user_fax" name="user_fax" value="0260-2641113" disabled><br><br>
+
+					<input class="btn-primary" type="submit" value="Add" onclick="add_directdeal()"><br><br><br>
+
+					<div id="output_text_id"></div>
+				</div>
+            </div>
+	</body>
+</html>

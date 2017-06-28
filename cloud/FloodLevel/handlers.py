@@ -15,7 +15,7 @@ class FloodLevelHandler(webapp2.RequestHandler):
 
         if self.request.method == 'GET':
             page = utils.template("add.html", "FloodLevel/html")
-            template_values = {"default_flood_level_date": datetime.datetime.now(TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M")}
+            template_values = {"default_flood_level_date": datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M")}
             self.response.out.write(template.render(page, template_values))
 
         else:
@@ -98,7 +98,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
                 madhubandam=floodlevel_latest_entry.flood_level,
                 inflow=int(floodlevel_latest_entry.inflow),
                 outflow=int(floodlevel_latest_entry.discharge),
-                time=utils.get_formated_am_pm_time(datetime.datetime.now(TimeZone(+5.5, False, 'IST'))),
+                time=utils.get_formated_am_pm_time(datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST'))),
                 date=datetime.datetime.today().strftime("%d/%m/%y")
             )
             sms_notification = SMSNotification()
