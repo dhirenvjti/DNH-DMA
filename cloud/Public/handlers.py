@@ -12,6 +12,20 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
 
         rainfall_latest_entry = Rainfall.get_latest_entry()
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
+        background_color = "#000000"
+        color = "#ffffff"
+        notification_type = ""
+        if 250000 <= floodlevel_latest_entry.discharge < 300000:
+            background_color = "#ffffff"
+            color = "#000000"
+            notification_type = "ALERT"
+        elif 300000 <= floodlevel_latest_entry.discharge < 350000:
+            background_color = "#3b5998"
+            notification_type = "READY FOR EVACUATION"
+        elif floodlevel_latest_entry.discharge > 350000:
+            background_color = "#d34836"
+            notification_type = "IMMEDIATE EVACUATION"
+
         template_values = {
             "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%Y-%m-%d %H:%M'),
             "rainfall_last_day": rainfall_latest_entry.rainfall_last_day,
@@ -21,5 +35,8 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
             "floodlevel_inflow": floodlevel_latest_entry.inflow,
             "floodlevel_discharge": floodlevel_latest_entry.discharge,
             "floodlevel_date": floodlevel_latest_entry.flood_level_date.strftime('%Y-%m-%d %H:%M'),
+            "background_color": background_color,
+            "color": color,
+            "notification_type": notification_type,
         }
         self.response.out.write(template.render(page, template_values))
