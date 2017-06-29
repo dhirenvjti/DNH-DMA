@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DNH-DMA</title>
+    <title>All Reports</title>
     <link rel="shortcut icon" href="/static/images/favicon.png" type="image/x-icon" />
     <meta property="og:image" content="/static/images/favicon.png"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -19,18 +19,12 @@
         }
     </script>
 </head>
-<body style="background-color: {{ background_color }}; color: {{ color }};">
-    <div class="container">
-        <h3 style="text-align:center;">Union Territory of Dadra & Nagar Haveli, Silvassa</h3>
-        <h4 style="text-align:center;">Data By: DNH-DMA</h4><br>
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h3 style="text-align:center;">Flood Situation Reports</h3>
 
         <div class="main-content">
-            <h2 style="text-align: center"><b>{{ notification_type }}</b></h2>
-            <div style="width: 80%; float: left; text-align: left; font-size: 90%">
-                Rainfall as on: {{ rainfall_date }} hrs<br>
-                Water Level as on: {{ floodlevel_date }} hrs
-            </div>
-
             <div style="width: 20%; float: right; text-align: right;">
                 <br>
                 <a href="#">
@@ -39,31 +33,23 @@
             </div>
 
             <table class="table" style="font-size: 120%;">
+                <thead>
+                    <tr>
+                        <th>TimeStamp</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
                 <tbody>
+                    {% for report in all_reports %}
                     <tr>
-                        <td>Water Level at {{ floodlevel_location }}</td>
-                        <td>{{ floodlevel_last_day }} meters</td>
-                        <td></td>
+                        <td>{{ report.created_at_IST }}</td>
+                        <td><a href="{{ report.report_link }}">download</a></td>
                     </tr>
-                    <tr>
-                        <td>Inflow at {{ floodlevel_location }}</td>
-                        <td>{{ floodlevel_inflow }} Cusec</td>
-                    </tr>
-                    <tr>
-                        <td>Outflow at {{ floodlevel_location }}</td>
-                        <td>{{ floodlevel_discharge }} Cusec</td>
-                    </tr>
-                    <tr>
-                        <td>Water Level at Athal Bridge</td>
-                        <td>{{ floodlevel_key_station }} meters</td>
-                    </tr>
-                    <tr>
-                        <td>Rainfall (last 24 hrs)</td>
-                        <td>{{ rainfall_last_day }} mm</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+</div>
 </body>
 </html>

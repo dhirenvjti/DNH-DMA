@@ -87,6 +87,17 @@ class FloodDamageHandler(webapp2.RequestHandler):
         flood_report = FloodDamageReport.get_latest_entry()
         self.redirect(str(flood_report.report_link))
 
+    def all_reports(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        page = utils.template("flood_damage_all_reports.html", "Report/html")
+        all_reports = FloodDamageReport().fetch_all()
+        all_reports = sorted(all_reports, key=lambda k: -1* int(datetime.datetime.strptime(k['created_at_IST'], "%Y-%m-%dT%H:%M:%S").strftime('%s')))
+        template_values = {'all_reports': all_reports}
+        self.response.out.write(template.render(page, template_values))
+
 class FloodSituationHandler(webapp2.RequestHandler):
     def generate(self):
         user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
@@ -179,6 +190,17 @@ class FloodSituationHandler(webapp2.RequestHandler):
     def download(self):
         flood_situation = FloodSituationReport.get_latest_entry()
         self.redirect(str(flood_situation.report_link))
+
+    def all_reports(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        page = utils.template("flood_situation_all_reports.html", "Report/html")
+        all_reports = FloodSituationReport().fetch_all()
+        all_reports = sorted(all_reports, key=lambda k: -1* int(datetime.datetime.strptime(k['created_at_IST'], "%Y-%m-%dT%H:%M:%S").strftime('%s')))
+        template_values = {'all_reports': all_reports}
+        self.response.out.write(template.render(page, template_values))
         
 class NDMAHandler(webapp2.RequestHandler):
     def generate(self):
@@ -244,3 +266,14 @@ class NDMAHandler(webapp2.RequestHandler):
     def download(self):
         ndma = NDMAReport.get_latest_entry()
         self.redirect(str(ndma.report_link))
+
+    def all_reports(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        page = utils.template("ndma_all_reports.html", "Report/html")
+        all_reports = NDMAReport().fetch_all()
+        all_reports = sorted(all_reports, key=lambda k: -1* int(datetime.datetime.strptime(k['created_at_IST'], "%Y-%m-%dT%H:%M:%S").strftime('%s')))
+        template_values = {'all_reports': all_reports}
+        self.response.out.write(template.render(page, template_values))
