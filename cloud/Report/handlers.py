@@ -11,12 +11,13 @@ import cloudstorage as gcs
 
 import utils
 from docx import Document
+from .models import *
 
-class ReportHandler(webapp2.RequestHandler):
-    def flood_damage(self):
-        # user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
-        # if not user_email:
-        #     return
+class FloodDamageHandler(webapp2.RequestHandler):
+    def generate(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
 
         if self.request.method == 'GET':
             page = utils.template("flood_damage.html", "Report/html")
@@ -36,7 +37,7 @@ class ReportHandler(webapp2.RequestHandler):
                     "cumulative_total_rainfall": self.request.get("cumulative_total_rainfall", None),
                     "river_name_levels_observed": self.request.get("river_name_levels_observed", None),
                     "name_engineering_works": self.request.get("name_engineering_works", None),
-                    "communication_disruption_details": self.request.get("cumulative_total_rainfall", None),
+                    "communication_disruption_details": self.request.get("communication_disruption_details", None),
                     "relief_measures_taken": self.request.get("relief_measures_taken", None),
                     "comments_press_news": self.request.get("comments_press_news", None),
                     "enclosed_map": self.request.get("enclosed_map", None),
@@ -64,7 +65,8 @@ class ReportHandler(webapp2.RequestHandler):
                 target_stream = StringIO.StringIO()
                 document.save(target_stream)
 
-                key = 'Report - Information related to Flood Stamp:{}'.format(datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M"))
+                created_at_IST = datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST'))
+                key = 'Report - Information related to Flood Stamp:{}'.format(created_at_IST.strftime("%Y-%m-%dT%H:%M"))
                 write_retry_params = gcs.RetryParams(backoff_factor=1.1)
                 filename = '/dnh-dma.appspot.com/%s.docx' % key
                 gcs_file = gcs.open(filename, 'w', content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', options={'x-goog-acl': 'public-read'},
@@ -72,7 +74,15 @@ class ReportHandler(webapp2.RequestHandler):
                 gcs_file.write(target_stream.getvalue())
                 gcs_file.close()
                 html_link = "https://storage.googleapis.com" + filename
+                FloodDamageReport().add(
+                    created_at_IST=created_at_IST,
+                    report_link = html_link
+                )
                 self.response.out.write(json.dumps({'success': True, 'error': None, 'response': html_link}))
             except Exception as e:
                 self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
                 logging.error(traceback.format_exc())
+
+    def download(self):
+        flood_report = FloodDamageReport.get_latest_entry()
+        self.redirect(str(flood_report.report_link))

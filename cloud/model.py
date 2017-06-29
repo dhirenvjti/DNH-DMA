@@ -37,3 +37,7 @@ class FloodLevel(db.Model):
 
     created_at = db.DateTimeProperty(auto_now_add=True)
     modified_at = db.DateTimeProperty(auto_now=True)
+
+class FloodDamageReport(db.Model):
+    created_at_IST = db.DateTimeProperty()
+    report_link = db.TextProperty()

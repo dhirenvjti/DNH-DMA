@@ -122,7 +122,7 @@
             };
 
             $.ajax({
-                url: '/report/flood_damage',
+                url: '/report/flood_damage/generate',
                 data: args,
                 type: 'POST',
                 error: function(data) {
@@ -187,19 +187,19 @@
 					<input placeholder="in m.m." type="number" id="cumulative_total_rainfall" name="cumulative_total_rainfall"><br><br>
 
                     <label for="river_name_levels_observed">Name of river and levels observed at key stations where the water level crosses the warning level normally 1.00 meter below danger level (Indicate Rising/Falling). The danger level & the maximum level ever reached(with date) at the stations under report may also be indicated in the first report. (meter)</label><br>
-                    <textarea placeholder="" id="river_name_levels_observed" name="river_name_levels_observed"></textarea><br><br>
+                    <textarea placeholder="" id="river_name_levels_observed" name="river_name_levels_observed">NIL</textarea><br><br>
 
                     <label for="name_engineering_works">Names of Engineering works (Flood embankments, bank protection works, spurs, roads, canals, railway and other public utilities etc. damaged and approximate value of damage, if possible.)</label><br>
-                    <textarea placeholder="" id="name_engineering_works" name="name_engineering_works"></textarea><br><br>
+                    <textarea placeholder="" id="name_engineering_works" name="name_engineering_works">NIL</textarea><br><br>
 
                     <label for="communication_disruption_details">Details of disruption to communications like highways, railways and telegraphs lines etc.</label><br>
-                    <textarea placeholder="" id="communication_disruption_details" name="communication_disruption_details"></textarea><br><br>
+                    <textarea placeholder="" id="communication_disruption_details" name="communication_disruption_details">NIL</textarea><br><br>
 
                     <label for="relief_measures_taken">Described measures taken to give relief to the affected persons and repair of the damage.</label><br>
-                        <textarea placeholder="" id="relief_measures_taken" name="relief_measures_taken"></textarea><br><br>
+                        <textarea placeholder="" id="relief_measures_taken" name="relief_measures_taken">NIL</textarea><br><br>
 
                     <label for="comments_press_news">Comments on relevant press news.</label><br>
-                        <textarea placeholder="" id="comments_press_news" name="comments_press_news"></textarea><br><br>
+                        <textarea placeholder="" id="comments_press_news" name="comments_press_news">NIL</textarea><br><br>
 
                     <label for="enclosed_map">Enclose map showing area flooded.</label><br>
 					<select class="selectpicker" id="enclosed_map" name="enclosed_map">
@@ -232,36 +232,36 @@
 					<input value="Dadra Nagar Haveli" type="text" id="state" name="state" disabled><br><br>
 
                     <label for="area_affected">Area affected</label><br>
-					<input placeholder="in M.hac." type="text" id="area_affected" name="area_affected"><br><br>
+					<input placeholder="in M.hac." value="NA" type="text" id="area_affected" name="area_affected"><br><br>
 
                     <label for="population_affected">Population affected</label><br>
-					<input placeholder="in Million" type="text" id="population_affected" name="population_affected"><br><br>
+					<input placeholder="in Million" value="NA" type="text" id="population_affected" name="population_affected"><br><br>
 
                     <label for="damage_to_crops">Damage to crops</label><br>
-					<input placeholder="in M.hac." type="text" id="damage_to_crops" name="damage_to_crops"><br><br>
+					<input placeholder="in M.hac." value="NA" type="text" id="damage_to_crops" name="damage_to_crops"><br><br>
 
                     <label for="damage_to_houses">Damage to houses</label><br>
-					<input placeholder="in Nos" type="text" id="damage_to_houses" name="damage_to_houses"><br><br>
+					<input placeholder="in Nos" value="NA" type="text" id="damage_to_houses" name="damage_to_houses"><br><br>
 
                     <label for="cattles_lost">Cattles lost</label><br>
-					<input placeholder="in Nos" type="text" id="cattles_lost" name="cattles_lost"><br><br>
+					<input placeholder="in Nos" value="NA" type="text" id="cattles_lost" name="cattles_lost"><br><br>
 
                     <label for="human_lives_lost">Human Lives lost</label><br>
-					<input placeholder="in Nos" type="text" id="human_lives_lost" name="human_lives_lost"><br><br>
+					<input placeholder="in Nos" value="NA" type="text" id="human_lives_lost" name="human_lives_lost"><br><br>
 
                     <label for="damage_to_public_utilities">Damage to Public Utilities</label><br>
-					<input placeholder="in Crore Rs." type="text" id="damage_to_public_utilities" name="damage_to_public_utilities"><br><br>
+					<input placeholder="in Crore Rs." value="NA" type="text" id="damage_to_public_utilities" name="damage_to_public_utilities"><br><br>
 
                     <label for="total_damage">Total Damage to crops houses, public Utilities etc. </label><br>
-					<input placeholder="in Crore Rs." type="text" id="total_damage" name="total_damage"><br><br>
+					<input placeholder="in Crore Rs." value="NA" type="text" id="total_damage" name="total_damage"><br><br>
 
                     <label for="user_name">Name of person filling this form:</label><br>
-					<input placeholder="name" type="text" id="user_name" name="user_name"><br><br>
+					<input placeholder="name" value="M.K.Rana" type="text" id="user_name" name="user_name"><br><br>
 
                     <label for="user_designation">Designation of person filling this form:</label><br>
 					<select class="selectpicker" id="user_designation" name="user_designation">
 					<script type="text/javascript">
-                        var designation_list = ['Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)', 'Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
+                        var designation_list = ['Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)',  'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
                         for(var i = 0; i<designation_list.length; i++){
 									str1 = "<option>%s</option>";
 									str = str1.replace('%s', designation_list[i]);
