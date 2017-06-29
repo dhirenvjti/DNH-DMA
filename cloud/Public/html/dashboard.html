@@ -21,14 +21,14 @@
 </head>
 <body style="background-color: {{ background_color }}; color: {{ color }};">
     <div class="container abc">
-        <h2 style="text-align:center;">Union Territory of Dadra & Nagar Haveli</h2>
-        <h3 style="text-align:center;">Silvassa</h3><br>
+        <h3 style="text-align:center;">Union Territory of Dadra & Nagar Haveli, Silvassa</h3>
+        <h4 style="text-align:center;">Data By: DNH-DMA</h4><br>
 
         <div class="main-content">
             <h2 style="text-align: center"><b>{{ notification_type }}</b></h2>
-            <div style="width: 80%; float: left; text-align: left;">
-                <h6>Rainfall last updated on: {{ rainfall_date }}</h6>
-                <h6>Water Level last updated on: {{ floodlevel_date }}</h6>
+            <div style="width: 80%; float: left; text-align: left; font-size: 90%">
+                Rainfall as on: {{ rainfall_date }} hrs<br>
+                Water Level as on: {{ floodlevel_date }} hrs
             </div>
 
             <div style="width: 20%; float: right; text-align: right;">
@@ -58,14 +58,11 @@
                         <td>{{ floodlevel_key_station }} meters</td>
                     </tr>
                     <tr>
-                        <td>Rainfall</td>
+                        <td>Rainfall (last 24 hrs)</td>
                         <td>{{ rainfall_last_day }} mm</td>
                     </tr>
                 </tbody>
             </table>
-            <div style="width: 100%; float: right; text-align: right;">
-                <h6><sup>*</sup>Data as provided by: DNH-DMA</h6>
-            </div>
         </div>
     </div>
 </body>

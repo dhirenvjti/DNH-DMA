@@ -27,14 +27,14 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
             notification_type = "IMMEDIATE EVACUATION"
 
         template_values = {
-            "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%Y-%m-%d %H:%M'),
+            "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%d/%m/%Y %H:%M'),
             "rainfall_last_day": rainfall_latest_entry.rainfall_last_day,
             "floodlevel_location": floodlevel_latest_entry.location,
             "floodlevel_last_day": floodlevel_latest_entry.flood_level,
             "floodlevel_key_station": floodlevel_latest_entry.reading_key_station,
             "floodlevel_inflow": floodlevel_latest_entry.inflow,
             "floodlevel_discharge": floodlevel_latest_entry.discharge,
-            "floodlevel_date": floodlevel_latest_entry.flood_level_date.strftime('%Y-%m-%d %H:%M'),
+            "floodlevel_date": floodlevel_latest_entry.flood_level_date.strftime('%d/%m/%Y %H:%M'),
             "background_color": background_color,
             "color": color,
             "notification_type": notification_type,
