@@ -11,7 +11,7 @@ import StringIO
 
 class RainfallHandler(webapp2.RequestHandler):
     def add(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -55,7 +55,7 @@ class RainfallHandler(webapp2.RequestHandler):
                 logging.error(traceback.format_exc())
 
     def fetch_all(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -72,7 +72,7 @@ class RainfallHandler(webapp2.RequestHandler):
 
 class PopulateRainfallDataHandler(webapp2.RequestHandler):
     def get(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
         page = utils.template("rainfall_upload.html", "Rainfall/html")
@@ -80,7 +80,7 @@ class PopulateRainfallDataHandler(webapp2.RequestHandler):
         self.response.out.write(template.render(page, template_values))
 
     def post(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
         csv_file_html = self.request.get('csv_file', '')

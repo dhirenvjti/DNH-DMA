@@ -15,7 +15,7 @@ from .models import *
 
 class FloodDamageHandler(webapp2.RequestHandler):
     def generate(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -89,7 +89,7 @@ class FloodDamageHandler(webapp2.RequestHandler):
 
 class FloodSituationHandler(webapp2.RequestHandler):
     def generate(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -182,7 +182,7 @@ class FloodSituationHandler(webapp2.RequestHandler):
         
 class NDMAHandler(webapp2.RequestHandler):
     def generate(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 

@@ -11,7 +11,7 @@ import csv
 
 class FloodLevelHandler(webapp2.RequestHandler):
     def add(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -71,7 +71,7 @@ class FloodLevelHandler(webapp2.RequestHandler):
                 logging.error(traceback.format_exc())
 
     def fetch_all(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
 
@@ -155,7 +155,7 @@ class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
             return float(input_string)
 
     def get(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
         page = utils.template("flood_level_upload.html", "FloodLevel/html")
@@ -163,7 +163,7 @@ class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
         self.response.out.write(template.render(page, template_values))
 
     def post(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
         if not user_email:
             return
         csv_file_html = self.request.get('csv_file', '')
