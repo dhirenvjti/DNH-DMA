@@ -80,6 +80,7 @@ class PopulateRainfallDataHandler(webapp2.RequestHandler):
         self.response.out.write(template.render(page, template_values))
 
     def post(self):
+        memcache.delete("rainfall_latest_entry")
         user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
         if not user_email:
             return
