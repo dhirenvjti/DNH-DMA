@@ -3,7 +3,7 @@ import datetime
 import logging
 import urllib
 
-from google.appengine.api import urlfetch
+from google.appengine.api import urlfetch, memcache
 
 import model
 import utils
@@ -17,6 +17,7 @@ class FloodLevel(object):
         flood_level_entry, entry_exists = self.get_datastore_entity(data)
 
         flood_level_entry.put()
+        memcache.set("flood_level_latest_entry", flood_level_entry)
         return self.get_json_object(flood_level_entry)
 
     def get(self, debug=False, **filters):
@@ -43,7 +44,11 @@ class FloodLevel(object):
 
     @staticmethod
     def get_latest_entry():
-        return model.FloodLevel.all().order('-flood_level_date').get()
+        entry = memcache.get("flood_level_latest_entry")
+        if not entry:
+            entry = model.FloodLevel.all().order('-flood_level_date').get()
+            memcache.set("flood_level_latest_entry", entry)
+        return entry
 
     def fetch_all(self):
         all_entries = self.get()

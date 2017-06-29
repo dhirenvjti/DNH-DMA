@@ -5,6 +5,7 @@ import logging
 import model
 import utils
 
+from google.appengine.api import memcache
 
 class Rainfall(object):
     def __init__(self):
@@ -14,6 +15,7 @@ class Rainfall(object):
         rainfall_entry, entry_exists = self.get_datastore_entity(data)
 
         rainfall_entry.put()
+        memcache.set("rainfall_latest_entry", rainfall_entry)
         return self.get_json_object(rainfall_entry)
 
     def get(self, debug=False, **filters):
@@ -40,7 +42,11 @@ class Rainfall(object):
 
     @staticmethod
     def get_latest_entry():
-        return model.Rainfall.all().order('-rainfall_date').get()
+        entry = memcache.get("rainfall_latest_entry")
+        if not entry:
+            entry = model.Rainfall.all().order('-rainfall_date').get()
+            memcache.set("rainfall_latest_entry", entry)
+        return entry
 
     def fetch_all(self):
         all_entries = self.get()
