@@ -9,6 +9,10 @@ automatic_scaling:
   max_idle_instances: 1
 
 handlers:
+- url: /admin/.*
+  script: google.appengine.ext.admin.application
+  login: admin
+
 - url: /report/.*|^/report$
   script: Report.app
 

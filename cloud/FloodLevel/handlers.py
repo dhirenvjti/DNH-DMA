@@ -5,6 +5,8 @@ import webapp2
 from google.appengine.ext.webapp import template
 
 from .models import *
+import StringIO
+import csv
 
 
 class FloodLevelHandler(webapp2.RequestHandler):
@@ -143,3 +145,66 @@ class SMSNotificationHandler(webapp2.RequestHandler):
             groupid=group_id,
             route=15
         )
+
+class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
+    @staticmethod
+    def format_float(input_string):
+        if input_string.lower() in ['', 'nil']:
+            return 0.0
+        else:
+            return float(input_string)
+
+    def get(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+        page = utils.template("flood_level_upload.html", "FloodLevel/html")
+        template_values = {}
+        self.response.out.write(template.render(page, template_values))
+
+    def post(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+        csv_file_html = self.request.get('csv_file', '')
+        csv_file = StringIO.StringIO(csv_file_html)
+        csv_reader = csv.reader(csv_file)
+        skip_row = 1
+
+        for fields in csv_reader:
+            skip_row -= 1
+            if skip_row >= 0:
+                continue
+
+            flood_level_date = datetime.datetime.strptime(fields[2]+fields[3], '%d/%m/%Y%H:%M:%S')
+            flood_level = self.format_float(fields[5])
+            discharge = self.format_float(fields[6])
+            inflow = self.format_float(fields[7])
+            location = fields[4]
+            user_name = fields[13].replace("\n","")
+            user_designation = None
+            reading_key_station = self.format_float(fields[8])
+            high_tide_from = None
+            low_tide_from = None
+            low_tide_to = None
+            high_tide_to = None
+            user_email = "eoc.dnh@gmail.com"
+
+            if not model.FloodLevel.get_by_key_name(datetime.datetime.strftime(flood_level_date, "%Y-%m-%dT%H:%M")):
+                FloodLevel().add(
+                    flood_level_date=flood_level_date,
+                    flood_level=flood_level,
+                    discharge=discharge,
+                    inflow=inflow,
+                    location=location,
+                    user_name=user_name,
+                    user_designation=user_designation,
+                    reading_key_station=reading_key_station,
+                    high_tide_from=high_tide_from,
+                    low_tide_from=low_tide_from,
+                    low_tide_to=low_tide_to,
+                    high_tide_to=high_tide_to,
+                    user_email=user_email,
+                )
+
+        self.response.out.write("Upload Successful!")

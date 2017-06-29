@@ -20,5 +20,5 @@ class AdminHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/admin', AdminHandler),
+    ('/administrator', AdminHandler),
 ])

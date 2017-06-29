@@ -20,4 +20,5 @@ app = webapp2.WSGIApplication([
                   handler=SMSNotificationHandler,
                   handler_method='alert',
                   methods=['GET', 'POST']),
+    ('/flood_level/populate_data', PopulateFloodLevelDataHandler),
 ])

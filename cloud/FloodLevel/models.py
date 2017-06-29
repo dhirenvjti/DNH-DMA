@@ -15,8 +15,6 @@ class FloodLevel(object):
 
     def add(self, **data):
         flood_level_entry, entry_exists = self.get_datastore_entity(data)
-        if entry_exists:
-            raise Exception("Flood level entry already made for date: {}".format(flood_level_entry.flood_level_date))
 
         flood_level_entry.put()
         return self.get_json_object(flood_level_entry)
