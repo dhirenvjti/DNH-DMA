@@ -179,3 +179,68 @@ class FloodSituationHandler(webapp2.RequestHandler):
     def download(self):
         flood_situation = FloodSituationReport.get_latest_entry()
         self.redirect(str(flood_situation.report_link))
+        
+class NDMAHandler(webapp2.RequestHandler):
+    def generate(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        if self.request.method == 'GET':
+            page = utils.template("ndma.html", "Report/html")
+            template_values = {"default_date_of_reporting": datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M"),
+                               "default_date_of_sending": datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%d")}
+            self.response.out.write(template.render(page, template_values))
+
+        else:
+            self.response.headers['Content-Type'] = "application/json"
+            self.response.headers['Access-Control-Allow-Origin'] = '*'
+            try:
+                date = datetime.datetime.strptime(self.request.get("date", None), "%Y-%m-%d")
+                replace_info = {
+                    "{date}": date.strftime("%d/%m/%Y"),
+                    "{districts_affected}": self.request.get("districts_affected", None),
+                    "{deaths}": self.request.get("deaths", None),
+                    "{injured}": self.request.get("injured", None),
+                    "{missing}": self.request.get("missing", None),
+                    "{houses_damaged_fully}": self.request.get("houses_damaged_fully", None),
+                    "{houses_damaged_partially}": self.request.get("houses_damaged_partially", None),
+                    "{livestock_affected_big}": self.request.get("livestock_affected_big", None),
+                    "{livestock_affected_small}": self.request.get("livestock_affected_small", None),
+                    "{livestock_affected_poultry}": self.request.get("livestock_affected_poultry", None),
+                    "{relief_camp}": self.request.get("relief_camp", None),
+                    "{deployment_rescue_team}": self.request.get("deployment_rescue_team", None),
+                    "{remarks}": self.request.get("remarks", None),
+                    "{user_name}": self.request.get("user_name", None),
+                    "{user_designation}": self.request.get("user_designation", None),
+                    "{user_contact}": self.request.get("user_contact", None),
+                    "{user_fax}": self.request.get("user_fax", None),
+                }
+
+                document = Document(utils.template('Report-NationalDisasterManagementAuthorityNDMA.docx', 'templates'))
+                for phrase, replacement in replace_info.iteritems():
+                    utils.docx_replace_regex(document, re.compile(phrase), replacement)
+                target_stream = StringIO.StringIO()
+                document.save(target_stream)
+
+                created_at_IST = datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST'))
+                key = 'Report - National Disaster Management Authority (NDMA) Stamp:{}'.format(created_at_IST.strftime("%Y-%m-%dT%H:%M"))
+                write_retry_params = gcs.RetryParams(backoff_factor=1.1)
+                filename = '/dnh-dma.appspot.com/%s.docx' % key
+                gcs_file = gcs.open(filename, 'w', content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document', options={'x-goog-acl': 'public-read'},
+                                    retry_params=write_retry_params)
+                gcs_file.write(target_stream.getvalue())
+                gcs_file.close()
+                html_link = "https://storage.googleapis.com" + filename
+                NDMAReport().add(
+                    created_at_IST=created_at_IST,
+                    report_link = html_link
+                )
+                self.response.out.write(json.dumps({'success': True, 'error': None, 'response': html_link}))
+            except Exception as e:
+                self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
+                logging.error(traceback.format_exc())
+
+    def download(self):
+        ndma = NDMAReport.get_latest_entry()
+        self.redirect(str(ndma.report_link))

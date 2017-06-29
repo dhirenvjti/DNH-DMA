@@ -146,3 +146,74 @@ class FloodSituationReport(object):
         flood_situation_report.report_link = json_object["report_link"]
 
         return flood_situation_report, entry_exists
+
+class NDMAReport(object):
+    def __init__(self):
+        pass
+
+    def add(self, **data):
+        ndma_report, entry_exists = self.get_datastore_entity(data)
+        if entry_exists:
+            raise Exception("NDMAReport entry already made for date: {}".format(ndma_report.created_at_IST))
+
+        ndma_report.put()
+        return self.get_json_object(ndma_report)
+
+    def get(self, debug=False, **filters):
+        query_string = "select * from NDMAReport"
+
+        filters = {key: val for key, val in filters.iteritems() if val != None}
+
+        i = 0
+        for field in filters:
+            if i == 0:
+                query_string += " where "
+
+            if i < len(filters) - 1:
+                query_string += "%s='%s' and " % (field, filters[field])
+            else:
+                query_string += "%s='%s'" % (field, filters[field])
+            i += 1
+
+        response = utils.fetch_gql(query_string)
+        if debug:
+            logging.error("Query String: %s\n\n Response Length: %s" % (query_string, len(response)))
+
+        return response
+
+    @staticmethod
+    def get_latest_entry():
+        return model.NDMAReport.all().order('-created_at_IST').get()
+
+    def fetch_all(self):
+        all_entries = self.get()
+
+        response = []
+        for ndma_report in all_entries:
+            response.append(self.get_json_object(ndma_report))
+
+        return response
+
+    @staticmethod
+    def get_json_object(datastore_entity):
+        json_object = {
+            "created_at_IST": datastore_entity.created_at_IST.strftime("%Y-%m-%dT%H:%M:%S"),
+            "report_link": datastore_entity.report_link,
+        }
+
+        return json_object
+
+    @staticmethod
+    def get_datastore_entity(json_object):
+        ndma_report_key_name = datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M:%S")
+        entry_exists = True
+        ndma_report = model.NDMAReport.get_by_key_name(ndma_report_key_name)
+        if not ndma_report:
+            entry_exists = False
+            ndma_report = model.NDMAReport(key_name=ndma_report_key_name)
+
+        ndma_report.created_at_IST = json_object["created_at_IST"]
+
+        ndma_report.report_link = json_object["report_link"]
+
+        return ndma_report, entry_exists

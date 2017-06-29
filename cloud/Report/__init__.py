@@ -21,4 +21,15 @@ app = webapp2.WSGIApplication([
                   handler_method='download',
                   methods=['GET', 'POST']),
 
+    webapp2.Route(template='/report/ndma/generate',
+                  handler=NDMAHandler,
+                  handler_method='generate',
+                  methods=['GET', 'POST']),
+
+    webapp2.Route(template='/report/ndma/download',
+                  handler=NDMAHandler,
+                  handler_method='download',
+                  methods=['GET', 'POST']),
+
+
 ])
