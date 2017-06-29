@@ -10,4 +10,15 @@ app = webapp2.WSGIApplication([
                   handler=FloodDamageHandler,
                   handler_method='download',
                   methods=['GET', 'POST']),
+
+    webapp2.Route(template='/report/flood_situation/generate',
+                  handler=FloodSituationHandler,
+                  handler_method='generate',
+                  methods=['GET', 'POST']),
+
+    webapp2.Route(template='/report/flood_situation/download',
+                  handler=FloodSituationHandler,
+                  handler_method='download',
+                  methods=['GET', 'POST']),
+
 ])

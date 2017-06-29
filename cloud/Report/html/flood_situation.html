@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+	input{
+		position: 100px;
+		width:200px;
+	}
+	body{
+		font-size: 100px;
+		font-family: monaco, monospace;
+		padding: 50px;
+	}
+	td{
+		border: 2px solid black;
+	}
+	table, th, td{
+	    border: 2px solid black;
+	}
+	label{
+		font-size:17px;
+	}
+
+</style>
+	<head>
+        <title>Report - Information related to Flood and Flood-Damage</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+     	<meta charset="utf-8">
+	    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!--<script src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>-->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
+   </head>
+    <script>
+        function getUrlVars()
+        {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for(var i = 0; i < hashes.length; i++)
+            {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker({
+                actionsBox: true,
+                liveSearch: true
+            });
+        });
+
+        function add_directdeal(){
+            $("#processing-modal").modal("show");
+            var date_of_sending = $("#date_of_sending").val();
+            var date_of_reporting = $("#date_of_reporting").val();
+            var time_of_reporting = $("#time_of_reporting").val();
+            var rainfall = $("#rainfall").val();
+            var rainfall_last_24hrs = $("#rainfall_last_24hrs").val();
+            var districts_affected = $("#districts_affected").val();
+            var districts_affected_24hrs = $("#districts_affected_24hrs").val();
+            var count_village_affected = $("#count_village_affected").val();
+            var count_village_affected_24hrs = $("#count_village_affected_24hrs").val();
+            var population_affected = $("#population_affected").val();
+            var population_affected_24hrs = $("#population_affected_24hrs").val();
+            var human_lives_lost = $("#human_lives_lost").val();
+            var human_lives_lost_24hrs = $("#human_lives_lost_24hrs").val();
+            var count_missing = $("#count_missing").val();
+            var count_missing_24hrs = $("#count_missing_24hrs").val();
+            var count_injured = $("#count_injured").val();
+            var count_injured_24hrs = $("#count_injured_24hrs").val();
+            var houses_damaged_fully = $("#houses_damaged_fully").val();
+            var houses_damaged_partially = $("#houses_damaged_partially").val();
+            var houses_damaged_24hrs = $("#houses_damaged_24hrs").val();
+            var animal_deaths = $("#animal_deaths").val();
+            var animal_deaths_24hrs = $("#animal_deaths_24hrs").val();
+            var count_persons_evacuated = $("#count_persons_evacuated").val();
+            var count_persons_evacuated_24hrs = $("#count_persons_evacuated_24hrs").val();
+            var count_relief_camps = $("#count_relief_camps").val();
+            var count_relief_camps_24hrs = $("#count_relief_camps_24hrs").val();
+            var inmates_in_relief_camp = $("#inmates_in_relief_camp").val();
+            var inmates_in_relief_camp_24hrs = $("#inmates_in_relief_camp_24hrs").val();
+            var relief_material_distributed = $("#relief_material_distributed").val();
+            var relief_material_distributed_24hrs = $("#relief_material_distributed_24hrs").val();
+            var total_crop_area_affected = $("#total_crop_area_affected").val();
+            var total_crop_area_affected_24hrs = $("#total_crop_area_affected_24hrs").val();
+            var infra_damage = $("#infra_damage").val();
+            var infra_damage_24hrs = $("#infra_damage_24hrs").val();
+            var NDRF = $("#NDRF").val();
+            var air_navy_army = $("#air_navy_army").val();
+            var other_govt_dept = $("#other_govt_dept").val();
+            var SDRF = $("#SDRF").val();
+            var state_police_fire = $("#state_police_fire").val();
+            var boats = $("#boats").val();
+            var user_name = $("#user_name").val();
+            var user_designation = $("#user_designation").val();
+            var user_contact = $("#user_contact").val();
+            var user_fax = $("#user_fax").val();
+
+            var args = {
+                "date_of_sending": date_of_sending,
+                "date_of_reporting": date_of_reporting,
+                "time_of_reporting": time_of_reporting,
+                "rainfall": rainfall,
+                "rainfall_last_24hrs": rainfall_last_24hrs,
+                "districts_affected": districts_affected,
+                "districts_affected_24hrs": districts_affected_24hrs,
+                "count_village_affected": count_village_affected,
+                "count_village_affected_24hrs": count_village_affected_24hrs,
+                "population_affected": population_affected,
+                "population_affected_24hrs": population_affected_24hrs,
+                "human_lives_lost": human_lives_lost,
+                "human_lives_lost_24hrs": human_lives_lost_24hrs,
+                "count_missing": count_missing,
+                "count_missing_24hrs": count_missing_24hrs,
+                "count_injured": count_injured,
+                "count_injured_24hrs": count_injured_24hrs,
+                "houses_damaged_fully": houses_damaged_fully,
+                "houses_damaged_partially": houses_damaged_partially,
+                "houses_damaged_24hrs": houses_damaged_24hrs,
+                "animal_deaths": animal_deaths,
+                "animal_deaths_24hrs": animal_deaths_24hrs,
+                "count_persons_evacuated": count_persons_evacuated,
+                "count_persons_evacuated_24hrs": count_persons_evacuated_24hrs,
+                "count_relief_camps": count_relief_camps,
+                "count_relief_camps_24hrs": count_relief_camps_24hrs,
+                "inmates_in_relief_camp": inmates_in_relief_camp,
+                "inmates_in_relief_camp_24hrs": inmates_in_relief_camp_24hrs,
+                "relief_material_distributed": relief_material_distributed,
+                "relief_material_distributed_24hrs": relief_material_distributed_24hrs,
+                "total_crop_area_affected": total_crop_area_affected,
+                "total_crop_area_affected_24hrs": total_crop_area_affected_24hrs,
+                "infra_damage": infra_damage,
+                "infra_damage_24hrs": infra_damage_24hrs,
+                "NDRF": NDRF,
+                "air_navy_army": air_navy_army,
+                "other_govt_dept": other_govt_dept,
+                "SDRF": SDRF,
+                "state_police_fire": state_police_fire,
+                "boats": boats,
+                "user_name": user_name,
+                "user_designation": user_designation,
+                "user_contact": user_contact,
+                "user_fax": user_fax,
+            };
+
+            $.ajax({
+                url: '/report/flood_situation/generate',
+                data: args,
+                type: 'POST',
+                error: function(data) {
+                    $("#processing-modal").modal("hide");
+                    $('#output_text_id').val('Internal Error:'+data);
+                },
+                success: function(data) {
+                    $("#processing-modal").modal("hide");
+                    if (data['success'] == false){
+
+                        $('#output_text_id').empty();
+                        if (typeof data['error']  === 'object'){
+                            for(i = 0 ; i < data['error'].length ; i++){
+                                    var str1 = '<ul><li>%s</li></ul>';
+
+                                    var str = str1.replace('%s', data['error'][i]["err_msg"]);
+                                    $('#output_text_id').addClass('alert alert-danger').append(str);
+                            }
+                        }
+                        else if (typeof data['error']  === 'string'){
+                            $('#output_text_id').empty();
+                            $('#output_text_id').addClass('alert alert-danger').append( data['error']);
+                        }
+                    }
+                    else{
+
+                        $('#output_text_id').empty().removeClass('alert alert-danger').addClass('alert alert-success');
+                        $('#output_text_id').append("Success. Please <a href='"+ data['response'] +"'>download</a> report.");
+                    }
+                }
+            });
+        }
+
+    </script>
+	<body>
+        <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="/static/images/pie.gif" class="icon"/>
+                            <h4>Processing...</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+			<div class="container">
+				<div class="jumbotron">
+                    <h2 style='display:inline;'>Report - Information related to Flood and Flood-Damage</h2><br><br>
+
+                    <label for="date_of_sending">Date of Sending:</label><br>
+                    <input type="date" id="date_of_sending" name="date_of_sending" style="width:200px;word-wrap: break-word;" value="{{ default_date_of_sending }}"><br><br>
+
+                    <label for="date_of_reporting">Date and Time of Reporting:</label><br>
+                    <input type="datetime-local" id="date_of_reporting" name="date_of_reporting" style="width:200px;word-wrap: break-word;" value="{{ default_date_of_reporting }}"><br><br>
+
+                    <label for="rainfall">Rainfall</label><br>
+                        <input placeholder="in m.m." type="number" id="rainfall" name="rainfall"><br><br>
+
+                    <label for="rainfall_last_24hrs">Rainfall during Last 24 hours</label><br>
+                        <input placeholder="in m.m." type="number" id="rainfall_last_24hrs" name="rainfall_last_24hrs"><br><br>
+
+                    <label for="districts_affected">Districts severely affected (names)</label><br>
+                        <textarea id="districts_affected" name="districts_affected">NIL</textarea><br><br>
+
+                    <label for="districts_affected_24hrs">Districts severely affected (names)</label><br>
+                        <textarea id="districts_affected_24hrs" name="districts_affected_24hrs">NIL</textarea><br><br>
+
+                    <label for="count_village_affected">No. of village effected </label><br>
+                        <textarea id="count_village_affected" name="count_village_affected">NIL</textarea><br><br>
+
+                    <label for="count_village_affected_24hrs">No. of village effected During last 24 hours</label><br>
+                        <textarea id="count_village_affected_24hrs" name="count_village_affected_24hrs">NIL</textarea><br><br>
+
+                    <label for="population_affected">Population affected</label><br>
+                        <textarea id="population_affected" name="population_affected">NIL</textarea><br><br>
+
+                    <label for="population_affected_24hrs">Population affected During last 24 hours</label><br>
+                        <textarea id="population_affected_24hrs" name="population_affected_24hrs">NIL</textarea><br><br>
+
+                    <label for="human_lives_lost">Human lives lost (district wise)</label><br>
+                        <textarea id="human_lives_lost" name="human_lives_lost">NIL</textarea><br><br>
+
+                    <label for="human_lives_lost_24hrs">Human lives lost (district wise) During last 24 hours</label><br>
+                        <textarea id="human_lives_lost_24hrs" name="human_lives_lost_24hrs">NIL</textarea><br><br>
+
+                    <label for="count_missing">No. of missing</label><br>
+                        <textarea id="count_missing" name="count_missing">NIL</textarea><br><br>
+
+                    <label for="count_missing_24hrs">No. of missing during last 24 hours</label><br>
+                        <textarea id="count_missing_24hrs" name="count_missing_24hrs">NIL</textarea><br><br>
+
+                    <label for="count_injured">No. of Injured</label><br>
+                        <textarea id="count_injured" name="count_injured">NIL</textarea><br><br>
+
+                    <label for="count_injured_24hrs">No. of Injured during last 24 hours</label><br>
+                        <textarea id="count_injured_24hrs" name="count_injured_24hrs">NIL</textarea><br><br>
+
+                    <label for="houses_damaged_fully">Houses damaged (Fully) </label><br>
+                        <textarea id="houses_damaged_fully" name="houses_damaged_fully">NIL</textarea><br><br>
+
+                    <label for="houses_damaged_partially">Houses damaged (Partially)</label><br>
+                        <textarea id="houses_damaged_partially" name="houses_damaged_partially">NIL</textarea><br><br>
+
+                    <label for="houses_damaged_24hrs">Houses damaged during last 24 hours</label><br>
+                        <textarea id="houses_damaged_24hrs" name="houses_damaged_24hrs">NIL</textarea><br><br>
+
+                    <label for="animal_deaths">Animal Deaths</label><br>
+                        <textarea id="animal_deaths" name="animal_deaths">NIL</textarea><br><br>
+
+                    <label for="animal_deaths_24hrs">Animal Deaths during last 24 hours</label><br>
+                        <textarea id="animal_deaths_24hrs" name="animal_deaths_24hrs">NIL</textarea><br><br>
+
+                    <label for="count_persons_evacuated">Number of persons evacuated</label><br>
+                        <textarea id="count_persons_evacuated" name="count_persons_evacuated">NIL</textarea><br><br>
+
+                    <label for="count_persons_evacuated_24hrs">Number of persons evacuated during last 24 hours</label><br>
+                        <textarea id="count_persons_evacuated_24hrs" name="count_persons_evacuated_24hrs">NIL</textarea><br><br>
+
+                    <label for="count_relief_camps">Number of relief camps opened</label><br>
+                        <textarea id="count_relief_camps" name="count_relief_camps">NIL</textarea><br><br>
+
+                    <label for="count_relief_camps_24hrs">Number of relief camps opened during last 24 hours </label><br>
+                        <textarea id="count_relief_camps_24hrs" name="count_relief_camps_24hrs">NIL</textarea><br><br>
+
+                    <label for="inmates_in_relief_camp">Inmates in the relief camps</label><br>
+                        <textarea id="inmates_in_relief_camp" name="inmates_in_relief_camp">NIL</textarea><br><br>
+
+                    <label for="inmates_in_relief_camp_24hrs">Inmates in the relief camps during last 24 hours</label><br>
+                        <textarea id="inmates_in_relief_camp_24hrs" name="inmates_in_relief_camp_24hrs">NIL</textarea><br><br>
+
+                    <label for="relief_material_distributed">Relief material distributed</label><br>
+                        <textarea id="relief_material_distributed" name="relief_material_distributed">NIL</textarea><br><br>
+
+                    <label for="relief_material_distributed_24hrs">Relief material distributed during last 24 hours</label><br>
+                        <textarea id="relief_material_distributed_24hrs" name="relief_material_distributed_24hrs">NIL</textarea><br><br>
+
+                    <label for="total_crop_area_affected">Total crop area affected (in hectares)</label><br>
+                        <textarea id="total_crop_area_affected" name="total_crop_area_affected">NIL</textarea><br><br>
+
+                    <label for="total_crop_area_affected_24hrs">Total crop area affected (in hectares) during last 24 hours</label><br>
+                        <textarea id="total_crop_area_affected_24hrs" name="total_crop_area_affected_24hrs">NIL</textarea><br><br>
+
+                    <label for="infra_damage">Infrastructure Damage</label><br>
+                        <textarea id="infra_damage" name="infra_damage">NIL</textarea><br><br>
+
+                    <label for="infra_damage_24hrs">Infrastructure Damage during last 24 hours</label><br>
+                        <textarea id="infra_damage_24hrs" name="infra_damage_24hrs">NIL</textarea><br><br>
+
+                    <label for="NDRF">NDRF</label><br>
+                        <textarea id="NDRF" name="NDRF">NIL</textarea><br><br>
+
+                    <label for="air_navy_army">Air Force, Navy and Army </label><br>
+                        <textarea id="air_navy_army" name="air_navy_army">NIL</textarea><br><br>
+
+                    <label for="other_govt_dept">Other Central Government Ministry/Department</label><br>
+                        <textarea id="other_govt_dept" name="other_govt_dept">NIL</textarea><br><br>
+
+                    <label for="SDRF">SDRF</label><br>
+                        <textarea id="SDRF" name="SDRF">NIL</textarea><br><br>
+
+                    <label for="state_police_fire">State Police/ Fire</label><br>
+                        <textarea id="state_police_fire" name="state_police_fire">NIL</textarea><br><br>
+
+                    <label for="boats">Boats</label><br>
+                        <textarea id="boats" name="boats">NIL</textarea><br><br>
+
+                    <label for="user_name">Name of person filling this form:</label><br>
+					<input placeholder="name" value="M.K.Rana" type="text" id="user_name" name="user_name"><br><br>
+
+                    <label for="user_designation">Designation of person filling this form:</label><br>
+					<select class="selectpicker" id="user_designation" name="user_designation">
+					<script type="text/javascript">
+                        var designation_list = ['Superintendent (Collectorate)/ Nodal Officer - Flood Control Room-2017', 'Resident Deputy Collector (Khanvel)', 'Resident Deputy Collector (Silvassa)',  'Disaster Management Professional - Dadra Nagar Haveli Disaster Management Authority'];
+                        for(var i = 0; i<designation_list.length; i++){
+									str1 = "<option>%s</option>";
+									str = str1.replace('%s', designation_list[i]);
+									document.write(str);
+						}
+					</script>
+					</select><br><br>
+
+                    <label for="user_contact">Contact No.:</label><br>
+					<input placeholder="contact number" type="text" id="user_contact" name="user_contact"><br><br>
+
+                    <label for="user_fax">Fax No.:</label><br>
+					<input placeholder="fax number" type="text" id="user_fax" name="user_fax" value="0260-2641113" disabled><br><br>
+
+
+					<input class="btn-primary" type="submit" value="Add" onclick="add_directdeal()"><br><br><br>
+
+					<div id="output_text_id"></div>
+				</div>
+            </div>
+	</body>
+</html>
