@@ -10,4 +10,6 @@ app = webapp2.WSGIApplication([
                   handler=RainfallHandler,
                   handler_method='fetch_all',
                   methods=['GET', 'POST']),
+
+    ('/rainfall/populate_data', PopulateRainfallDataHandler),
 ])

@@ -12,8 +12,6 @@ class Rainfall(object):
 
     def add(self, **data):
         rainfall_entry, entry_exists = self.get_datastore_entity(data)
-        if entry_exists:
-            raise Exception("Rainfall entry already made for date: {}".format(rainfall_entry.rainfall_date))
 
         rainfall_entry.put()
         return self.get_json_object(rainfall_entry)
