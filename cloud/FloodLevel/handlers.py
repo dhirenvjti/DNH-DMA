@@ -110,10 +110,6 @@ class FloodLevelHandler(webapp2.RequestHandler):
             logging.error(traceback.format_exc())
 
     def analytics(self):
-        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
-        if not user_email:
-            return
-
         if self.request.method == 'GET':
             page = utils.template("analytics.html", "FloodLevel/html")
 

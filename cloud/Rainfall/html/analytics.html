@@ -81,7 +81,10 @@
                         }
 
                         var chart = Highcharts.chart('rainfall_graph', {
-
+                            chart: {
+                                type: 'column',
+                                zoomType: 'x'
+                            },
                             title: {
                                 text: 'Rainfall History'
                             },
@@ -104,8 +107,6 @@
                             },
                             series: [{
                                 name: 'rainfall',
-                                type: 'column',
-                                colorByPoint: true,
                                 data: rainfall_mm,
                                 showInLegend: false
                             }]
