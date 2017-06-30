@@ -76,7 +76,7 @@ class RainfallHandler(webapp2.RequestHandler):
         try:
 
             start_date = datetime.datetime.strptime(self.request.get("start_date", None), "%Y-%m-%d")
-            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d")
+            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d") + datetime.timedelta(days=1)
 
             query_string = "select * from Rainfall where rainfall_date > datetime({}, {}, {}) and rainfall_date < datetime({}, {}, {})".format(
                 start_date.year,

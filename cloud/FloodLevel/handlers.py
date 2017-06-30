@@ -92,7 +92,7 @@ class FloodLevelHandler(webapp2.RequestHandler):
         try:
 
             start_date = datetime.datetime.strptime(self.request.get("start_date", None), "%Y-%m-%d")
-            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d")
+            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d") + datetime.timedelta(days=1)
 
             query_string = "select * from FloodLevel where flood_level_date > datetime({}, {}, {}) and flood_level_date < datetime({}, {}, {})".format(
                 start_date.year,
