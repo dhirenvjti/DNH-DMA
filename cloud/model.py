@@ -19,6 +19,14 @@ class Rainfall(db.Model):
     created_at = db.DateTimeProperty(auto_now_add=True)
     modified_at = db.DateTimeProperty(auto_now=True)
 
+class RainfallHourly(db.Model):
+    rainfall_date = db.DateTimeProperty()
+    rainfall_last_hour = db.FloatProperty(default=0.0)
+    rainfall_location = db.StringProperty()
+    user_name = db.StringProperty()
+    user_email = db.StringProperty()
+    user_designation = db.StringProperty()
+
 class FloodLevel(db.Model):
     flood_level_date = db.DateTimeProperty()
     flood_level = db.FloatProperty(default=0.0)

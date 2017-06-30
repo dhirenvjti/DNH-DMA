@@ -25,7 +25,7 @@ handlers:
 - url: /flood_level/.*|^/flood_level$
   script: FloodLevel.app
 
-- url: /rainfall/.*|^/rainfall$
+- url: /rainfall/.*|^/rainfall$|/rainfall_hourly/.*|^/rainfall_hourly$
   script: Rainfall.app
 
 - url: .*
