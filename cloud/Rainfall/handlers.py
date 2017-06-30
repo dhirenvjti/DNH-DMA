@@ -260,3 +260,49 @@ class RainfallHourlyHandler(webapp2.RequestHandler):
                 "default_start_date": date_7days.strftime("%Y-%m-%d"),
             }
             self.response.out.write(template.render(page, template_values))
+
+class PopulateRainfallHourlyDataHandler(webapp2.RequestHandler):
+    def get(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+        page = utils.template("rainfall_hourly_upload.html", "Rainfall/html")
+        template_values = {}
+        self.response.out.write(template.render(page, template_values))
+
+    def post(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+        csv_file_html = self.request.get('csv_file', '')
+        csv_file = StringIO.StringIO(csv_file_html)
+        csv_reader = csv.reader(csv_file)
+        skip_row = 1
+        for fields in csv_reader:
+            skip_row -= 1
+            if skip_row >= 0:
+                continue
+
+            rainfall_date = datetime.datetime.strptime(fields[4]+fields[5], '%d/%m/%Y%H:%M:%S')
+
+            rainfall_last_hour = fields[6]
+            if rainfall_last_hour.lower() in ['', 'nil']:
+                rainfall_last_hour = 0.0
+            else:
+                rainfall_last_hour = float(rainfall_last_hour)
+
+            rainfall_location = fields[1]
+            user_name = fields[7]
+            user_email = "eoc.dnh@gmail.com"
+            user_designation = None
+
+            RainfallHourly().add(
+                rainfall_date=rainfall_date,
+                rainfall_last_hour=rainfall_last_hour,
+                rainfall_location=rainfall_location,
+                user_name=user_name,
+                user_email=user_email,
+                user_designation=user_designation,
+            )
+
+        self.response.out.write("Upload Successful!")

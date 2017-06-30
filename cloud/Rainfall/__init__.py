@@ -42,4 +42,5 @@ app = webapp2.WSGIApplication([
                   methods=['GET', 'POST']),
 
     ('/rainfall/populate_data', PopulateRainfallDataHandler),
+    ('/rainfall_hourly/populate_data', PopulateRainfallHourlyDataHandler),
 ])
