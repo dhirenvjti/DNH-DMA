@@ -17,7 +17,7 @@ class FloodLevel(object):
         flood_level_entry, entry_exists = self.get_datastore_entity(data)
 
         flood_level_entry.put()
-        memcache.set("flood_level_latest_entry", flood_level_entry)
+        memcache.delete("flood_level_latest_entry")
         return self.get_json_object(flood_level_entry)
 
     def get(self, debug=False, **filters):

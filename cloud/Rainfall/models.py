@@ -15,7 +15,7 @@ class Rainfall(object):
         rainfall_entry, entry_exists = self.get_datastore_entity(data)
 
         rainfall_entry.put()
-        memcache.set("rainfall_latest_entry", rainfall_entry)
+        memcache.delete("rainfall_latest_entry")
         return self.get_json_object(rainfall_entry)
 
     def get(self, debug=False, **filters):
