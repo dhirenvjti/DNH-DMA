@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rainfall Analytics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        $( document ).ready(function() {
+            $('.graph_on_demand').hide();
+
+            var current_data = {{ current_data|safe }};
+            console.log(current_data);
+            var timestamp = [];
+            var madhuban_points = [];
+            var athal_points = [];
+            var warning_level_madhuban = [];
+            var danger_level_madhuban = [];
+            var warning_level_athal = [];
+            var danger_level_athal = [];
+
+            for(var i = 0; i < current_data.length; i++) {
+                var obj = current_data[i];
+
+                timestamp.push(obj.flood_level_date.slice(11,));
+                madhuban_points.push(obj.flood_level);
+                athal_points.push(obj.reading_key_station);
+                warning_level_madhuban.push(79.86);
+                danger_level_madhuban.push(82.40);
+                warning_level_athal.push(29.0);
+                danger_level_athal.push(30.0);
+            }
+
+            var madhuban_chart = Highcharts.chart('current_water_level_madhuban', {
+                chart: {
+                    type: 'area'
+                },
+                title: {
+                    text: 'Water Level at Madhuban'
+                },
+
+                subtitle: {
+                    text: ""
+                },
+                xAxis: {
+                    categories: timestamp
+                },
+                 yAxis: {
+                    title: {
+                        text: 'in meters'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{point.y} meters'
+                },
+                series: [
+                    {
+                        name: 'water level',
+                        data: madhuban_points
+                    },
+                    {
+                        name: 'warning level',
+                        type: 'line',
+                        color: 'black',
+                        data: warning_level_madhuban
+                    },
+                    {
+                        name: 'danger level',
+                        type: 'line',
+                        color: 'red',
+                        data: danger_level_madhuban
+                    }
+                ]
+            });
+
+            var athal_chart = Highcharts.chart('current_water_level_athal', {
+                chart: {
+                    type: 'area'
+                },
+                title: {
+                    text: 'Water Level at Athal Bridge'
+                },
+
+                subtitle: {
+                    text: ""
+                },
+
+                xAxis: {
+                    categories: timestamp
+                },
+                 yAxis: {
+                    title: {
+                        text: 'in meters'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{point.y} meters'
+                },
+                series: [
+                    {
+                        name: 'water level',
+                        data: athal_points
+                    },
+                    {
+                        name: 'warning level',
+                        type: 'line',
+                        color: 'black',
+                        data: warning_level_athal
+                    },
+                    {
+                        name: 'danger level',
+                        type: 'line',
+                        color: 'red',
+                        data: danger_level_athal
+                    }
+                ]
+            });
+        });
+
+
+        function generate_graph() {
+            var start_date = $('#start_date').val();
+            var rainfall_location = $("#rainfall_location option:selected").html();
+            var end_date = $('#end_date').val();
+
+            var args = {
+                "start_date": start_date,
+                "rainfall_location": rainfall_location,
+                "end_date": end_date
+            };
+
+            $.ajax({
+                url: '/flood_level/filter',
+                data: args,
+                type: 'POST',
+                error: function(data) {
+                    $("#processing-modal").modal("hide");
+                    $('#output_text_id').val('Internal Error:'+data);
+                },
+                success: function(data) {
+                    $("#processing-modal").modal("hide");
+                    if (data['success'] == false){
+
+                        $('#output_text_id').empty();
+                        if (typeof data['error']  === 'object'){
+                            for(i = 0 ; i < data['error'].length ; i++){
+                                    var str1 = '<ul><li>%s</li></ul>';
+
+                                    var str = str1.replace('%s', data['error'][i]["err_msg"]);
+                                    $('#output_text_id').addClass('alert alert-danger').append(str);
+                            }
+                        }
+                        else if (typeof data['error']  === 'string'){
+                            $('#output_text_id').empty();
+                            $('#output_text_id').addClass('alert alert-danger').append( data['error']);
+                        }
+                    }
+                    else{
+                        $('#output_text_id').empty().removeClass('alert alert-danger').addClass('alert alert-success');
+                        $('#output_text_id').append('Success');
+
+                        $("#processing-modal").modal("show");
+
+                        console.log(data);
+                        if(!data) {
+                            return;
+                        }
+
+                        var timestamp = [];
+                        var madhuban_points = [];
+                        var athal_points = [];
+                        var warning_level_madhuban = [];
+                        var danger_level_madhuban = [];
+                        var warning_level_athal = [];
+                        var danger_level_athal = [];
+                        var inflow_points = [];
+                        var outflow_points = [];
+
+                        for(var i = 0; i < data.response.length; i++) {
+                            var obj = data.response[i];
+
+                            timestamp.push(obj.flood_level_date);
+                            madhuban_points.push(obj.flood_level);
+                            athal_points.push(obj.reading_key_station);
+                            warning_level_madhuban.push(79.86);
+                            danger_level_madhuban.push(82.40);
+                            warning_level_athal.push(29.0);
+                            danger_level_athal.push(30.0);
+                            inflow_points.push(obj.inflow);
+                            outflow_points.push(obj.discharge);
+
+                        }
+
+                        var madhuban_history = Highcharts.chart('madhuban_history', {
+                            chart: {
+                                type: 'area'
+                            },
+                            title: {
+                                text: 'Water Level History at Madhuban'
+                            },
+
+                            subtitle: {
+                                text: ""
+                            },
+
+                            xAxis: {
+                                categories: timestamp
+                            },
+                             yAxis: {
+                                title: {
+                                    text: 'in meters'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{point.x}</b><br/>',
+                                pointFormat: '{point.y} meters'
+                            },
+                            series: [
+                                {
+                                    name: 'water level',
+                                    data: madhuban_points
+                                },
+                                {
+                                    name: 'warning level',
+                                    type: 'line',
+                                    color: 'black',
+                                    data: warning_level_madhuban
+                                },
+                                {
+                                    name: 'danger level',
+                                    type: 'line',
+                                    color: 'red',
+                                    data: danger_level_madhuban
+                                }
+                            ]
+                        });
+
+                        var athal_history = Highcharts.chart('athal_history', {
+                            chart: {
+                                type: 'area'
+                            },
+                            title: {
+                                text: 'Water Level History at Athal Bridge'
+                            },
+
+                            subtitle: {
+                                text: ""
+                            },
+
+                            xAxis: {
+                                categories: timestamp
+                            },
+                             yAxis: {
+                                title: {
+                                    text: 'in meters'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{point.x}</b><br/>',
+                                pointFormat: '{point.y} meters'
+                            },
+                            series: [
+                                {
+                                    name: 'water level',
+                                    data: athal_points
+                                },
+                                {
+                                    name: 'warning level',
+                                    type: 'line',
+                                    color: 'black',
+                                    data: warning_level_athal
+                                },
+                                {
+                                    name: 'danger level',
+                                    type: 'line',
+                                    color: 'red',
+                                    data: danger_level_athal
+                                }
+                            ]
+                        });
+
+                        var inflow_history = Highcharts.chart('inflow_history', {
+                            chart: {
+                                type: 'area'
+                            },
+                            title: {
+                                text: 'Dam Water Inflow'
+                            },
+
+                            subtitle: {
+                                text: ""
+                            },
+
+                            xAxis: {
+                                categories: timestamp
+                            },
+                             yAxis: {
+                                title: {
+                                    text: 'in meters'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{point.x}</b><br/>',
+                                pointFormat: '{point.y} meters'
+                            },
+                            series: [
+                                {
+                                    name: 'Inflow',
+                                    data: inflow_points
+                                }
+                            ]
+                        });
+
+                        var outflow_history = Highcharts.chart('outflow_history', {
+                            chart: {
+                                type: 'area'
+                            },
+                            title: {
+                                text: 'Dam Water Outflow'
+                            },
+
+                            subtitle: {
+                                text: ""
+                            },
+
+                            xAxis: {
+                                categories: timestamp
+                            },
+                             yAxis: {
+                                title: {
+                                    text: 'in meters'
+                                }
+                            },
+                            tooltip: {
+                                headerFormat: '<b>{point.x}</b><br/>',
+                                pointFormat: '{point.y} meters'
+                            },
+                            series: [
+                                {
+                                    name: 'Outflow',
+                                    data: outflow_points
+                                }
+                            ]
+                        });
+
+                        $("#processing-modal").modal("hide");
+                        $('.graph_on_demand').show();
+
+                    }
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="/static/images/pie.gif" class="icon"/>
+                        <h4>Processing...</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h2 style='display:inline;'>Water Level Trend in DNH</h2><br><br>
+
+        <div style="width: 50%; float: left; text-align: left;">
+            <label for="current_water_level_madhuban">Current Level at Madhuban:</label><br>
+            <div id="current_water_level_madhuban" style=""></div>
+        </div>
+
+        <div style="width: 50%; float: right; text-align: left;">
+            <label for="current_water_level_athal">Current Level at Athal Bridge:</label><br>
+            <div id="current_water_level_athal" style=""></div>
+        </div>
+        <br>
+
+        <label for="start_date">Start Date:</label><br>
+        <input type="date" id="start_date" name="start_date" style="width:140px;word-wrap: break-word;" value="{{ default_start_date }}"><br><br>
+
+        <label for="end_date">End Date:</label><br>
+        <input type="date" id="end_date" name="end_date" style="width:140px;word-wrap: break-word;" value="{{ default_end_date }}"><br><br>
+
+        <input class="btn-primary" type="submit" value="Submit" onclick="generate_graph()"><br><br><br>
+
+        <div id="output_text_id"></div>
+
+        <div class="graph_on_demand" style="width: 50%; float: left; text-align: left;">
+            <label for="madhuban_history">Water Level History at Madhuban:</label><br>
+            <div id="madhuban_history" style=""></div>
+        </div>
+
+        <div class="graph_on_demand" style="width: 50%; float: right; text-align: left;">
+            <label for="athal_history">Water Level History at Athal Bridge:</label><br>
+            <div id="athal_history" style=""></div>
+        </div>
+        <br><br>
+        <div class="graph_on_demand" style="width: 50%; float: left; text-align: left;">
+            <label for="inflow_history">Dam Water Inflow History:</label><br>
+            <div id="inflow_history" style=""></div>
+        </div>
+
+        <div class="graph_on_demand" style="width: 50%; float: right; text-align: left;">
+            <label for="outflow_history">Dam Water Outflow History:</label><br>
+            <div id="outflow_history" style=""></div>
+        </div>
+        <br>
+    </div>
+</body>
+</html>

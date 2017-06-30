@@ -43,6 +43,14 @@ class FloodLevel(object):
         return response
 
     @staticmethod
+    def query(query_string):
+        response = []
+        all_entries = utils.fetch_gql(query_string=query_string)
+        for entry in all_entries:
+            response.append(FloodLevel.get_json_object(entry))
+        return response
+
+    @staticmethod
     def get_latest_entry():
         entry = memcache.get("flood_level_latest_entry")
         if not entry:
