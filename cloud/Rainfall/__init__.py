@@ -11,5 +11,15 @@ app = webapp2.WSGIApplication([
                   handler_method='fetch_all',
                   methods=['GET', 'POST']),
 
+    webapp2.Route(template='/rainfall/filter',
+                  handler=RainfallHandler,
+                  handler_method='filter',
+                  methods=['GET', 'POST']),
+
+    webapp2.Route(template='/rainfall/analytics',
+                  handler=RainfallHandler,
+                  handler_method='analytics',
+                  methods=['GET', 'POST']),
+
     ('/rainfall/populate_data', PopulateRainfallDataHandler),
 ])

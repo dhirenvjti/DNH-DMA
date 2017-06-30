@@ -70,6 +70,47 @@ class RainfallHandler(webapp2.RequestHandler):
             self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
             logging.error(traceback.format_exc())
 
+    def filter(self):
+        self.response.headers['Content-Type'] = "application/json"
+        self.response.headers['Access-Control-Allow-Origin'] = '*'
+        try:
+
+            start_date = datetime.datetime.strptime(self.request.get("start_date", None), "%Y-%m-%d")
+            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d")
+
+            query_string = "select * from Rainfall where rainfall_date > datetime({}, {}, {}) and rainfall_date < datetime({}, {}, {})".format(
+                start_date.year,
+                start_date.month,
+                start_date.day,
+                end_date.year,
+                end_date.month,
+                end_date.day,
+            )
+            response = []
+            all_entries = utils.fetch_gql(query_string=query_string)
+            for entry in all_entries:
+                response.append(Rainfall.get_json_object(entry))
+
+            self.response.out.write(json.dumps({'success': True, 'error': [], 'response': response}))
+        except Exception as e:
+            self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
+            logging.error(traceback.format_exc())
+
+    def analytics(self):
+        user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
+        if not user_email:
+            return
+
+        if self.request.method == 'GET':
+            page = utils.template("analytics.html", "Rainfall/html")
+            date_today = datetime.date.today()
+            date_7days = date_today - datetime.timedelta(days=7)
+            template_values = {
+                "default_end_date": date_today.strftime("%Y-%m-%d"),
+                "default_start_date": date_7days.strftime("%Y-%m-%d"),
+            }
+            self.response.out.write(template.render(page, template_values))
+
 class PopulateRainfallDataHandler(webapp2.RequestHandler):
     def get(self):
         user_email = utils.authenticate_user(self, self.request.url, ["eoc.dnh@gmail.com", "dhirenvjti@gmail.com"])
