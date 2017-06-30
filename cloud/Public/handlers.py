@@ -27,7 +27,7 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
             notification_type = "IMMEDIATE EVACUATION"
 
         template_values = {
-            "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%d/%m/%Y %H:%M'),
+            "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%d/%m/%Y 08:%M'),
             "rainfall_last_day": rainfall_latest_entry.rainfall_last_day,
             "floodlevel_location": floodlevel_latest_entry.location,
             "floodlevel_last_day": floodlevel_latest_entry.flood_level,
