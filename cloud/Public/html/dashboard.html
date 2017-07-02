@@ -13,13 +13,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
     <script>
+        function page_refresh(){
+            setTimeout("window.open(self.location, '_self');", 900000);
+        }
         function refresh(){
             $('.main-content').html("");
             window.location.reload();
         }
     </script>
 </head>
-<body style="background-color: {{ background_color }}; color: {{ color }};">
+<body style="background-color: {{ background_color }}; color: {{ color }};" onload="page_refresh()">
     <div class="container">
         <h3 style="text-align:center;">Union Territory of Dadra & Nagar Haveli, Silvassa</h3>
         <h4 style="text-align:center;">Data By: DNH-DMA</h4>
