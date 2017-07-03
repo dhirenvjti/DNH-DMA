@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="3600">
     <title>DNH-DMA</title>
     <link rel="shortcut icon" href="/static/images/favicon.png" type="image/x-icon" />
     <meta property="og:image" content="/static/images/favicon.png"/>
@@ -13,16 +14,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
     <script>
-        function page_refresh(){
-            setTimeout("window.open(self.location, '_self');", 60*60000);
-        }
         function refresh(){
             $('.main-content').html("");
             window.location.reload();
         }
     </script>
 </head>
-<body style="background-color: {{ background_color }}; color: {{ color }};" onload="page_refresh()">
+<body style="background-color: {{ background_color }}; color: {{ color }};">
     <div class="container">
         <h3 style="text-align:center;">Union Territory of Dadra & Nagar Haveli, Silvassa</h3>
         <h4 style="text-align:center;">Data By: DNHDMA</h4>
