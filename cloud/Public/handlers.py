@@ -4,7 +4,7 @@ from google.appengine.ext.webapp import template
 import utils
 from FloodLevel.models import FloodLevel
 from Rainfall.models import Rainfall
-
+import datetime
 
 class PublicDataDisplayHandler(webapp2.RequestHandler):
     def get(self):
@@ -26,8 +26,10 @@ class PublicDataDisplayHandler(webapp2.RequestHandler):
             background_color = "#d34836"
             notification_type = "IMMEDIATE EVACUATION"
 
+        rainfall_date = rainfall_latest_entry.rainfall_date + datetime.timedelta(days=1)
+        rainfall_date = rainfall_date.strftime('%d/%m/%Y 08:%M')
         template_values = {
-            "rainfall_date": rainfall_latest_entry.rainfall_date.strftime('%d/%m/%Y 08:%M'),
+            "rainfall_date": rainfall_date,
             "rainfall_last_day": rainfall_latest_entry.rainfall_last_day,
             "floodlevel_location": floodlevel_latest_entry.location,
             "floodlevel_last_day": floodlevel_latest_entry.flood_level,
