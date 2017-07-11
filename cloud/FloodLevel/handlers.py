@@ -136,7 +136,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
         debug = self.request.get("debug", "0")
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
         if floodlevel_latest_entry.flood_level > 79.86 or floodlevel_latest_entry.reading_key_station > 29 or floodlevel_latest_entry.discharge > 250000:
-            group_ids = [12124] if debug == "1" else [12124]  # [12337, 12338] for production
+            group_ids = [13056,13055] if debug == "1" else [13056,13055]  # [13056,13055] for production, [12124] for testing
             floodlevel_latest_entry = FloodLevel.get_latest_entry()
 
             message = "ALERT: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
@@ -165,7 +165,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
 
     def daily(self):
         debug = self.request.get("debug", "0")
-        group_id = 12124 if debug=="1" else 12124 # 12339 for production
+        group_id = 13053 if debug == "1" else 13053 # 13053 for production, 12124 for testing
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
 
         message = "UPDATE: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
