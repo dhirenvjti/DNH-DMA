@@ -8,6 +8,39 @@ from google.appengine.api import urlfetch, memcache
 import model
 import utils
 
+class MiscellaneousStats(object):
+    def __init__(self):
+        pass
+
+    def add(self, **data):
+        miscellaneous_stats_entry, entry_exists = self.get_datastore_entity(data)
+        miscellaneous_stats_entry.put()
+
+        return True
+
+    def get(self, debug=False, **filters):
+        query_string = "select info from MiscellaneousStats"
+
+        response = utils.fetch_gql(query_string)
+        if debug:
+            logging.error("Query String: %s\n\n Response Length: %s" % (query_string, len(response)))
+
+        return response
+
+
+    @staticmethod
+    def get_datastore_entity(json_object):
+        miscellaneous_stats_entry_key_name = json_object["athal_level_alert"]
+        entry_exists = True
+        miscellaneous_stats_entry = model.MiscellaneousStats.get_by_key_name(miscellaneous_stats_entry_key_name)
+        if not miscellaneous_stats_entry:
+            entry_exists = False
+            miscellaneous_stats_entry = model.MiscellaneousStats(key_name=miscellaneous_stats_entry_key_name)
+
+        miscellaneous_stats_entry.athal_level_alert = "athal_level_alert"
+        miscellaneous_stats_entry.info = json_object["info"]
+
+        return miscellaneous_stats_entry, entry_exists
 
 class FloodLevel(object):
     def __init__(self):

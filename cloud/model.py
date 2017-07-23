@@ -57,3 +57,7 @@ class FloodSituationReport(db.Model):
 class NDMAReport(db.Model):
     created_at_IST = db.DateTimeProperty()
     report_link = db.TextProperty()
+
+class MiscellaneousStats(db.Model):
+    athal_level_alert = db.StringProperty()
+    info = db.FloatProperty(default=0.0)

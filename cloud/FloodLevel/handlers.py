@@ -17,14 +17,17 @@ class FloodLevelHandler(webapp2.RequestHandler):
 
         if self.request.method == 'GET':
             page = utils.template("add.html", "FloodLevel/html")
-            template_values = {"default_flood_level_date": datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime("%Y-%m-%dT%H:%M")}
+            template_values = {
+                "default_flood_level_date": datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST')).strftime(
+                    "%Y-%m-%dT%H:%M")}
             self.response.out.write(template.render(page, template_values))
 
         else:
             self.response.headers['Content-Type'] = "application/json"
             self.response.headers['Access-Control-Allow-Origin'] = '*'
             try:
-                flood_level_date = datetime.datetime.strptime(self.request.get("flood_level_date", None), "%Y-%m-%dT%H:%M")
+                flood_level_date = datetime.datetime.strptime(self.request.get("flood_level_date", None),
+                                                              "%Y-%m-%dT%H:%M")
                 flood_level = float(self.request.get("flood_level", None))
                 discharge = float(self.request.get("discharge", None))
                 inflow = float(self.request.get("inflow", None))
@@ -45,7 +48,7 @@ class FloodLevelHandler(webapp2.RequestHandler):
                 if low_tide_to:
                     low_tide_to = datetime.datetime.strptime(low_tide_to, "%Y-%m-%dT%H:%M")
 
-                high_tide_to =self.request.get("high_tide_to", None)
+                high_tide_to = self.request.get("high_tide_to", None)
                 if high_tide_to:
                     high_tide_to = datetime.datetime.strptime(high_tide_to, "%Y-%m-%dT%H:%M")
 
@@ -65,6 +68,47 @@ class FloodLevelHandler(webapp2.RequestHandler):
                     user_email=user_email,
                 )
 
+                new_athal_level = reading_key_station
+                miscellaneous_stats = model.MiscellaneousStats.all().get()
+
+                if not miscellaneous_stats:
+                    response = MiscellaneousStats().add(
+                        athal_level_alert="athal_level_alert",
+                        info=reading_key_station,
+                    )
+                    last_athal_level = reading_key_station
+                else:
+                    last_athal_level = miscellaneous_stats.info
+
+                if new_athal_level < 29:
+                    response = MiscellaneousStats().add(
+                        athal_level_alert="athal_level_alert",
+                        info=new_athal_level,
+                    )
+
+                elif new_athal_level > 29 and new_athal_level < 30:
+                    if last_athal_level < 29:
+                        self.athal_alert(reading_key_station=new_athal_level,flood_level=flood_level,dam_inflow=inflow,dam_outflow=discharge)
+
+                        response = MiscellaneousStats().add(
+                            athal_level_alert="athal_level_alert",
+                            info=new_athal_level,
+                        )
+                    if new_athal_level >= 29.5 and last_athal_level < 29.5:
+                        self.athal_alert(reading_key_station=new_athal_level,flood_level=flood_level,dam_inflow=inflow,dam_outflow=discharge)
+
+                        response = MiscellaneousStats().add(
+                            athal_level_alert="athal_level_alert",
+                            info=new_athal_level,
+                        )
+                elif new_athal_level > 30:
+                    if new_athal_level - last_athal_level >= 1:
+                        self.athal_alert(reading_key_station=new_athal_level,flood_level=flood_level,dam_inflow=inflow,dam_outflow=discharge)
+
+                        response = MiscellaneousStats().add(
+                            athal_level_alert="athal_level_alert",
+                            info=new_athal_level,
+                        )
                 self.response.out.write(json.dumps({'success': True, 'error': [], 'response': response}))
             except Exception as e:
                 self.response.out.write(json.dumps({'success': False, 'error': e.message, 'response': None}))
@@ -92,7 +136,8 @@ class FloodLevelHandler(webapp2.RequestHandler):
         try:
 
             start_date = datetime.datetime.strptime(self.request.get("start_date", None), "%Y-%m-%d")
-            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d") + datetime.timedelta(days=1)
+            end_date = datetime.datetime.strptime(self.request.get("end_date", None), "%Y-%m-%d") + datetime.timedelta(
+                days=1)
 
             query_string = "select * from FloodLevel where flood_level_date > datetime({}, {}, {}) and flood_level_date < datetime({}, {}, {})".format(
                 start_date.year,
@@ -102,7 +147,8 @@ class FloodLevelHandler(webapp2.RequestHandler):
                 end_date.month,
                 end_date.day,
             )
-            response = sorted(FloodLevel.query(query_string), key=lambda k: int(datetime.datetime.strptime(k['flood_level_date'], "%Y-%m-%dT%H:%M").strftime('%s')))
+            response = sorted(FloodLevel.query(query_string), key=lambda k: int(
+                datetime.datetime.strptime(k['flood_level_date'], "%Y-%m-%dT%H:%M").strftime('%s')))
 
             self.response.out.write(json.dumps({'success': True, 'error': [], 'response': response}))
         except Exception as e:
@@ -113,7 +159,6 @@ class FloodLevelHandler(webapp2.RequestHandler):
         if self.request.method == 'GET':
             page = utils.template("analytics.html", "FloodLevel/html")
 
-
             date_today = datetime.date.today()
             date_7days = date_today - datetime.timedelta(days=7)
 
@@ -122,7 +167,8 @@ class FloodLevelHandler(webapp2.RequestHandler):
                 date_today.month,
                 date_today.day,
             )
-            current_data = sorted(FloodLevel.query(current_data_query_string), key=lambda k: int(datetime.datetime.strptime(k['flood_level_date'], "%Y-%m-%dT%H:%M").strftime('%s')))
+            current_data = sorted(FloodLevel.query(current_data_query_string), key=lambda k: int(
+                datetime.datetime.strptime(k['flood_level_date'], "%Y-%m-%dT%H:%M").strftime('%s')))
 
             template_values = {
                 "default_end_date": date_today.strftime("%Y-%m-%d"),
@@ -131,12 +177,41 @@ class FloodLevelHandler(webapp2.RequestHandler):
             }
             self.response.out.write(template.render(page, template_values))
 
+    @staticmethod
+    def athal_alert(reading_key_station, flood_level, dam_inflow, dam_outflow):
+        group_ids = [13056, 13055] # 13053 for production, 12124 for testing
+        message = "ALERT: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
+                  "{inflow} cusec, Outflow {outflow} cusec (Evacuation at 300000) {time} {date} -DNHDMA".format(
+            athallevel=reading_key_station,
+            madhubandam=flood_level,
+            inflow=int(dam_inflow),
+            outflow=int(dam_outflow),
+            time=utils.get_formated_am_pm_time(datetime.datetime.now(utils.TimeZone(+5.5, False, 'IST'))),
+            date=datetime.datetime.today().strftime("%d/%m/%y")
+        )
+        sms_notification = SMSNotification()
+        for group_id in group_ids:
+            sms_notification.send_group_sms(
+                user="dnhdm2017",
+                password="123456",
+                senderid="DNHDMC",
+                channel="Trans",
+                DCS=0,
+                flashsms=0,
+                number=917874148005,
+                text=message,
+                groupid=group_id,
+                route=15
+            )
+
+
 class SMSNotificationHandler(webapp2.RequestHandler):
     def alert(self):
         debug = self.request.get("debug", "0")
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
-        if floodlevel_latest_entry.flood_level > 79.86 or floodlevel_latest_entry.reading_key_station > 29 or floodlevel_latest_entry.discharge > 250000:
-            group_ids = [13056,13055] if debug == "1" else [13056,13055]  # [13056,13055] for production, [12124] for testing
+        if floodlevel_latest_entry.flood_level > 79.86 or floodlevel_latest_entry.discharge > 250000:
+            group_ids = [13056, 13055] if debug == "1" else [13056,
+                                                             13055]  # [13056,13055] for production, [12124] for testing
             floodlevel_latest_entry = FloodLevel.get_latest_entry()
 
             message = "ALERT: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
@@ -165,7 +240,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
 
     def daily(self):
         debug = self.request.get("debug", "0")
-        group_id = 13053 if debug == "1" else 13053 # 13053 for production, 12124 for testing
+        group_id = 13053 if debug == "1" else 13053  # 13053 for production, 12124 for testing
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
 
         message = "UPDATE: ATHAL {athallevel}m (Danger at 30.00m), Dam {madhubandam}m (Danger at 82.40m), Inflow " \
@@ -190,6 +265,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
             groupid=group_id,
             route=15
         )
+
 
 class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
     @staticmethod
@@ -221,12 +297,12 @@ class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
             if skip_row >= 0:
                 continue
 
-            flood_level_date = datetime.datetime.strptime(fields[2]+fields[3], '%d/%m/%Y%H:%M:%S')
+            flood_level_date = datetime.datetime.strptime(fields[2] + fields[3], '%d/%m/%Y%H:%M:%S')
             flood_level = self.format_float(fields[5])
             discharge = self.format_float(fields[6])
             inflow = self.format_float(fields[7])
             location = fields[4]
-            user_name = fields[13].replace("\n","")
+            user_name = fields[13].replace("\n", "")
             user_designation = None
             reading_key_station = self.format_float(fields[8])
             high_tide_from = None
