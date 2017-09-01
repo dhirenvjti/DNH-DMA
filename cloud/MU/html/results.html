@@ -21,6 +21,7 @@
 
     <script>
         function check_result() {
+
             var seat_no = $('#seat_no').val();
             var rainfall_location = $("#rainfall_location option:selected").html();
             var end_date = $('#end_date').val();
@@ -62,23 +63,46 @@
                         $("#processing-modal").modal("show");
 
                         console.log(data);
-                        if(!data) {
-                            return;
-                        }
-
                         var htmlText = '';
-                        for(var i = 0; i < data.response.length; i++) {
-                            var obj = data.response[i];
+                        var result_char = '';
+                        var result_hold = '';
 
-                            htmlText += '<div id="rainfall_graph">';
-                            htmlText += '<p class="p-name"> Name: ' + obj.name + '</p>';
-                            htmlText += '<p class="p-loc"> Result: ' + obj.result + '</p>';
-                            htmlText += '<p class="p-desc"> Seat No: ' + obj.seat_no + '</p>';
-                            htmlText += '<p class="p-created"> Year: ' + obj.year + '</p>';
-                            htmlText += '<p class="p-created"> Res: ' + obj.res + '</p>';
-                            htmlText += '</div>';
+                        if(data.response.length == 0){
+                            result_char = "SEAT NUMBER DOES NOT EXIST";
+                            htmlText += '<div style="text-align:center;font-size:20px" id="rainfall_graph">';
+                            htmlText += '<p class="p-loc" style="font-weight:bold"> Result: ' + result_char + '</p>';
                         }
-                        $('body').append(htmlText);
+                        else{
+                            for(var i = 0; i < data.response.length; i++) {
+                                var obj = data.response[i];
+
+                                if(obj.result == 'F')
+                                 result_char = "FAIL";
+                                else if(obj.result == 'P')
+                                 result_char = "PASS";
+                                else if(obj.result == 'D')
+                                 result_char = "DISTINCTION";
+                                else if(obj.result == 'I')
+                                 result_char = "FIRST CLASS";
+                                else if(obj.result == 'S')
+                                 result_char = "SECOND CLASS";
+
+                                if (obj.res)
+                                    result_hold = "RESULT ON HOLD.";
+                                htmlText += '<div style="text-align:center;font-size:20px" id="rainfall_graph">';
+                                if(obj.res)
+                                    htmlText += '<p class="p-loc" style="font-weight:bold"> Result: ' + result_char + ', '+result_hold+'</p>';
+                                else
+                                    htmlText += '<p class="p-loc" style="font-weight:bold"> Result: ' + result_char + '</p>';
+                                htmlText += '<p class="p-name" > Name: ' + obj.name + '</p>';
+                                htmlText += '<p class="p-desc"> Seat No: ' + obj.seat_no + '</p>';
+                                htmlText += '<p class="p-created"> Year: ' + obj.year + '</p>';
+                                htmlText += '</div>';
+                            }
+
+                        }
+                        $('#rainfall_graph').html('');
+                        $('#rainfall_graph').append(htmlText);
 
                         $("#processing-modal").modal("hide");
 
