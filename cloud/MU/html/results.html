@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MU-Results</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+
+
+    <script>
+        function check_result() {
+            var seat_no = $('#seat_no').val();
+            var rainfall_location = $("#rainfall_location option:selected").html();
+            var end_date = $('#end_date').val();
+
+            var args = {
+                "seat_no": seat_no
+            };
+
+            $.ajax({
+                url: '/mu/mu_filter',
+                data: args,
+                type: 'POST',
+                error: function(data) {
+                    $("#processing-modal").modal("hide");
+                    $('#output_text_id').val('Internal Error:'+data);
+                },
+                success: function(data) {
+                    $("#processing-modal").modal("hide");
+                    if (data['success'] == false){
+
+                        $('#output_text_id').empty();
+                        if (typeof data['error']  === 'object'){
+                            for(i = 0 ; i < data['error'].length ; i++){
+                                    var str1 = '<ul><li>%s</li></ul>';
+
+                                    var str = str1.replace('%s', data['error'][i]["err_msg"]);
+                                    $('#output_text_id').addClass('alert alert-danger').append(str);
+                            }
+                        }
+                        else if (typeof data['error']  === 'string'){
+                            $('#output_text_id').empty();
+                            $('#output_text_id').addClass('alert alert-danger').append( data['error']);
+                        }
+                    }
+                    else{
+                        $('#output_text_id').empty().removeClass('alert alert-danger').addClass('alert alert-success');
+                        $('#output_text_id').append('Success');
+
+                        $("#processing-modal").modal("show");
+
+                        console.log(data);
+                        if(!data) {
+                            return;
+                        }
+
+                        var htmlText = '';
+                        for(var i = 0; i < data.response.length; i++) {
+                            var obj = data.response[i];
+
+                            htmlText += '<div id="rainfall_graph">';
+                            htmlText += '<p class="p-name"> Name: ' + obj.name + '</p>';
+                            htmlText += '<p class="p-loc"> Result: ' + obj.result + '</p>';
+                            htmlText += '<p class="p-desc"> Seat No: ' + obj.seat_no + '</p>';
+                            htmlText += '<p class="p-created"> Year: ' + obj.year + '</p>';
+                            htmlText += '<p class="p-created"> Res: ' + obj.res + '</p>';
+                            htmlText += '</div>';
+                        }
+                        $('body').append(htmlText);
+
+                        $("#processing-modal").modal("hide");
+
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="text-center">
+                        <img src="/static/images/pie.gif" class="icon"/>
+                        <h4>Processing...</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="jumbotron">
+            <h2 style='display:inline;'>MU Results 2017</h2><br><br>
+
+            <label for="seat_no">Seat Number:</label><br>
+            <input type="number" id="seat_no" name="seat_no" style="width:140px;word-wrap: break-word;"><br><br>
+
+            <input class="btn-primary" type="submit" value="Submit" onclick="check_result()"><br><br><br>
+
+            <div id="output_text_id"></div>
+
+            <div id="rainfall_graph" style=""></div>
+
+
+</body>
+</html>

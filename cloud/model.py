@@ -61,3 +61,14 @@ class NDMAReport(db.Model):
 class MiscellaneousStats(db.Model):
     athal_level_alert = db.StringProperty()
     info = db.FloatProperty(default=0.0)
+
+class MU(db.Model):
+    seat_no = db.StringProperty()
+    name = db.StringProperty()
+    result = db.StringProperty()
+    frem = db.StringProperty()
+    res = db.StringProperty()
+    exam_no = db.StringProperty()
+    exam = db.StringProperty()
+    year = db.StringProperty()
+    month = db.StringProperty()

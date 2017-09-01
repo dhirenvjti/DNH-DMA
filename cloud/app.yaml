@@ -22,6 +22,9 @@ handlers:
 - url: /public/.*|^/public$
   script: Public.app
 
+- url: /mu/.*|^/mu$
+  script: MU.app
+
 - url: /flood_level/.*|^/flood_level$
   script: FloodLevel.app
 
