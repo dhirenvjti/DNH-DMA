@@ -209,7 +209,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
     def alert(self):
         debug = self.request.get("debug", "0")
         floodlevel_latest_entry = FloodLevel.get_latest_entry()
-        if floodlevel_latest_entry.flood_level > 79.86 or floodlevel_latest_entry.discharge > 250000:
+        if floodlevel_latest_entry.flood_level > 80.2 or floodlevel_latest_entry.discharge > 250000: #Previous flood level - 79.86
             group_ids = [13056, 13055] if debug == "1" else [13056,
                                                              13055]  # [13056,13055] for production, [12124] for testing
             floodlevel_latest_entry = FloodLevel.get_latest_entry()
