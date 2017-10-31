@@ -1,0 +1,4 @@
+- Start SMS cron entries.
+	-- Add entry in cron.yaml (Every day at 6:30 PM IST - convert this to the server time)
+- Start the data upload for admin
+	-- Change JS.
