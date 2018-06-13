@@ -329,3 +329,6 @@ class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
                 )
 
         self.response.out.write("Upload Successful!")
+# - description: Send SMS daily
+#   url: /flood_level/sms_notification/daily
+#   schedule: every day 13:00
