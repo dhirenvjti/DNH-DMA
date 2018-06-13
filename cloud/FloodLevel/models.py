@@ -157,7 +157,3 @@ class SMSNotification(object):
             method=urlfetch.GET,
             deadline=50
         )
-
-# - description: Send SMS daily
-#   url: /flood_level/sms_notification/daily
-#   schedule: every day 13:00
