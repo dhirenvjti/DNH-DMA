@@ -1,4 +1,1 @@
 cron:
-- description: Send Alert SMS
-  url: /flood_level/sms_notification/alert
-  schedule: every 30 minutes

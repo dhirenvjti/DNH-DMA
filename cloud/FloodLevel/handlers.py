@@ -332,3 +332,7 @@ class PopulateFloodLevelDataHandler(webapp2.RequestHandler):
 # - description: Send SMS daily
 #   url: /flood_level/sms_notification/daily
 #   schedule: every day 13:00
+#
+# - description: Send Alert SMS
+#   url: /flood_level/sms_notification/alert
+#   schedule: every 30 minutes
