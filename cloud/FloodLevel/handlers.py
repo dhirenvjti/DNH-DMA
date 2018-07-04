@@ -190,10 +190,11 @@ class FloodLevelHandler(webapp2.RequestHandler):
             date=datetime.datetime.today().strftime("%d/%m/%y")
         )
         sms_notification = SMSNotification()
+        #change password to 123456 for working SMS feature.
         for group_id in group_ids:
             sms_notification.send_group_sms(
                 user="dnhdm2017",
-                password="123456",
+                password="1234567",
                 senderid="DNHDMC",
                 channel="Trans",
                 DCS=0,
@@ -227,7 +228,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
             for group_id in group_ids:
                 sms_notification.send_group_sms(
                     user="dnhdm2017",
-                    password="123456",
+                    password="1234567",
                     senderid="DNHDMC",
                     channel="Trans",
                     DCS=0,
@@ -255,7 +256,7 @@ class SMSNotificationHandler(webapp2.RequestHandler):
         sms_notification = SMSNotification()
         sms_notification.send_group_sms(
             user="dnhdm2017",
-            password="123456",
+            password="1234567",
             senderid="DNHDMC",
             channel="Trans",
             DCS=0,
